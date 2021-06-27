@@ -26,14 +26,6 @@ html {
   background: #fff;
   min-height: 100vh;
 
-  body {
-    height: 100%;
-  }
-
-  // &:not(.professional) {
-  //   background: linear-gradient(135deg, #fff 0%, #ddd 100%);
-  //   body {
-  //     background-image: url('/topography.svg');
-  //   }
-  // }
+  background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+  background-image: url('/topography.svg');
 }
