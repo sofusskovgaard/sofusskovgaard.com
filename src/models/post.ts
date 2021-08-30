@@ -4,8 +4,10 @@ import transformer from 'utils/transformer'
 
 class Post extends BaseModel implements IPost {
   title: string
+  slug: string
   subtitle: string
-  releaseTs: Date
+  content: string
+  release_at: Date
 
   constructor(attrs: Partial<IPost>) {
     super()
@@ -16,7 +18,7 @@ class Post extends BaseModel implements IPost {
     super.merge(
       transformer(
         {
-          releaseTs: Date,
+          release_at: Date,
         },
         attrs,
       ),
@@ -28,6 +30,8 @@ export default Post
 
 export interface IPost extends IBaseModel {
   title: string
+  slug: string
   subtitle: string
-  releaseTs: Date | string
+  content: string
+  release_at: Date | string
 }

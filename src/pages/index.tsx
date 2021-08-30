@@ -1,67 +1,115 @@
 import React, { useEffect } from 'react'
+import { observer } from 'mobx-react'
 import Head from 'next/head'
-import Image from 'next/image'
-import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 
-/**
- * Components
- */
-import Post from 'components/post'
-import Repository from 'components/repository'
-import List from 'components/list'
-import Container from 'components/container'
-import Loader from 'components/loader'
+// data access
+import PrismicService from 'services/prismic-service'
+import { Document } from '@prismicio/client/types/documents'
 
-const Home: NextPage = () => {
-  return (
-    <Container className="grid gap-4 grid-cols-1 md:grid-cols-2 pt-4 md:pt-12 pb-4">
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 grid-rows-3 md:grid-rows-6 md:col-span-2">
-        <div className="col-start-1 row-start-2 md:row-start-1 md:row-span-6">
-          <Image
-            src="/images/sofus_skovgaard.jpg"
-            className="rounded"
-            alt="Picture of Sofus Skovgaard"
-            height={400}
-            width={400}
-            layout="responsive"
-          />
+// utils
+import { useStores } from 'utils/stores'
+import ComponentTypes from 'enums/ComponentTypes'
+import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
+import WorkExperience from 'components/work-experience'
+
+// components
+const Post = dynamic(() => import('components/post'))
+const List = dynamic(() => import('components/list'))
+const Container = dynamic(() => import('components/container'))
+const Introduction = dynamic(() => import('components/introduction'))
+
+const Home = observer(
+  ({
+    posts,
+    components,
+  }: {
+    posts: any[]
+    components: { introduction: any; workExperience: any }
+  }) => {
+    const stores = useStores()
+
+    return (
+      <Container>
+        <Head>
+          <title>{stores.uiStore.app_name}</title>
+        </Head>
+
+        <Introduction model={components.introduction} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          {components.workExperience != null && (
+            <List
+              title="Work experience"
+              render={(exp: any) => (
+                <WorkExperience
+                  key={exp._meta.id}
+                  job_title={exp.job_title}
+                  company={exp.company}
+                  company_url={exp.company_url.url}
+                  started={exp.started}
+                  stopped={exp.stopped}
+                />
+              )}
+              model={components.workExperience}
+              className="col-start-1 row-start-1"
+            />
+          )}
+          {/* {components.workExperience != null && (
+            <List
+              title="Work experience"
+              render={(exp: Document) => (
+                <WorkExperience
+                  key={exp.id}
+                  job_title={exp.data.job_title}
+                  company={exp.data.company}
+                  company_url={exp.data.company_url.url}
+                  started={exp.data.started}
+                  stopped={exp.data.stopped}
+                />
+              )}
+              model={components.workExperience.results}
+              className="col-start-1"
+            />
+          )} */}
+
+          {posts != null && (
+            <List
+              title="Latest posts"
+              link={{ href: '/blog', text: 'All posts' }}
+              render={(post: any) => (
+                <Post
+                  key={post._meta.id}
+                  uid={post._meta.uid}
+                  title={post.title[0].text}
+                  subtitle={post.subtitle[0].text}
+                  published_at={new Date(post._meta.firstPublicationDate)}
+                  categories={post.categories}
+                />
+              )}
+              model={posts}
+              className="col-start-1 md:col-start-2 row-start-2 md:row-start-1 row-span-2"
+            />
+          )}
         </div>
+      </Container>
+    )
+  },
+)
 
-        <section className="row-start-1 col-start-1 md:col-start-2">
-          <h1 className="font-bold text-3xl mb-1">Sofus Skovgaard</h1>
-          <h3 className="font-medium uppercase text-gray-500">Developer / Designer / Photographer</h3>
-        </section>
-
-        <section className="row-start-3 md:col-start-2 md:row-span-5">
-          <p className="mb-4">
-            Culpa nostrud sit et ex aute ea. Deserunt deserunt ad cillum deserunt veniam duis ipsum eu elit sit. Id ea
-            qui velit nostrud ullamco.
-          </p>
-          <p>
-            Quis non est reprehenderit fugiat tempor aliqua. Lorem deserunt enim enim aliqua laborum dolore ullamco
-            voluptate culpa adipisicing aliqua laboris Lorem. Ad qui est ea nostrud irure duis adipisicing et minim
-            Lorem eiusmod ipsum consectetur.
-          </p>
-        </section>
-      </div>
-
-      {/* <List<PostModel>
-        className="col-start-1 md:col-start-2 md:row-start-2"
-        title="Latest posts"
-        link={{ href: '#', text: 'All posts' }}
-        render={(model) => <Post key={model.id} post={model} />}
-        model={posts}
-      /> */}
-
-      {/* <List<RepositoryModel>
-          className="md:col-start-1 md:row-start-2"
-          title="Repositories"
-          link={{ href: '#', text: 'All repositories' }}
-          render={(model) => <Repository key={model.id} data={model} />}
-          model={}
-        /> */}
-    </Container>
-  )
+export async function getStaticProps() {
+  const posts = await PrismicService.getBlogPosts(1, 5)
+  const workExperience = await PrismicService.getWorkExperience()
+  const introduction = await PrismicService.getIntroduction()
+  return {
+    props: {
+      posts,
+      components: {
+        introduction,
+        workExperience,
+      },
+    },
+  }
 }
 
 export default Home

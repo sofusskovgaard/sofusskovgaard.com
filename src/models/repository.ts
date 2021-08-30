@@ -13,7 +13,6 @@ class Repository extends BaseModel implements IRepository {
 
   constructor(attrs: Partial<IRepository> = null) {
     super()
-
     this.merge(attrs)
   }
 
@@ -38,5 +37,5 @@ export interface IRepository extends IBaseModel {
   stargazers_count: number
   watchers_count: number
   forks_count: number
-  created_at: Date
+  created_at: Date | string
 }
