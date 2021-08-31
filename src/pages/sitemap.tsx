@@ -14,7 +14,7 @@ import { useStores } from 'utils/stores'
 // components
 const Container = dynamic(() => import('components/container'))
 
-const Sitemap = observer(({ posts }: { posts: Document[] }) => {
+const Sitemap = observer(({ posts }: { posts: any[] }) => {
   const stores = useStores()
   return (
     <Container>
@@ -25,10 +25,10 @@ const Sitemap = observer(({ posts }: { posts: Document[] }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-max gap-4">
         {posts.map(post => {
           return (
-            <div key={post.uid} className="flex items-center justify-center text-center">
-              <Link href={`/blog/${post.uid}`}>
+            <div key={post._meta.uid} className="flex items-center justify-center text-center">
+              <Link href={`/blog/${post._meta.uid}`}>
                 <a className="">
-                  {post.data.title[0].text}
+                  {post.title[0].text}
                 </a>
               </Link>
             </div>
