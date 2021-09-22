@@ -11,6 +11,7 @@ export type ListType<Model> = {
   render: (model: Model) => JSX.Element
   model: Model[]
   className?: string
+  emptyText?: string
 }
 
 const List = <Model extends unknown>(opts: ListType<Model>) => (
@@ -29,7 +30,9 @@ const List = <Model extends unknown>(opts: ListType<Model>) => (
       )}
     </div>
 
-    {opts.model.map((item) => opts.render(item))}
+    <div className="flex flex-col gap-4">
+      {opts.model.length > 0 ? opts.model.map((item) => opts.render(item)) : <span className="text-center text-sm text-gray-400">{opts.emptyText ?? "There is no content to display"}</span>}
+    </div>
   </section>
 )
 

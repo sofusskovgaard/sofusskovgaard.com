@@ -10,7 +10,7 @@ import { RichText } from 'prismic-reactjs'
 // utils
 import { useStores } from 'utils/stores'
 import { formatLongDate } from 'utils/date-format'
-import styled from 'styled-components'
+import { useRouter } from 'next/router'
 
 // Components
 const Container = dynamic(() => import('components/container'))
@@ -29,6 +29,12 @@ const BlogPost = observer(
     prevPost: any | null
   }) => {
     const stores = useStores()
+    const router = useRouter()
+
+    if (router.isFallback) {
+      return <p>loading...</p>
+    }
+
     return (
       <Container>
         <Head>
@@ -39,41 +45,47 @@ const BlogPost = observer(
           <meta name="keywords" content={post.seo_keys} />
           <meta name="author" content="Sofus Skovgaard" />
         </Head>
-        {(nextPost != null || prevPost != null) && (
-          <div className="flex mb-6">
-            {nextPost != null && (
-              <Link href={`/blog/${nextPost._meta.uid}`}>
-                <a className="text-gray-600 hover:text-black hover:underline text-sm">&#8592; Next post</a>
-              </Link>
-            )}
-            {prevPost != null && (
-              <Link href={`/blog/${prevPost._meta.uid}`}>
-                <a className="text-gray-600 hover:text-black hover:underline text-sm ml-auto">Previous post &#8594;</a>
-              </Link>
-            )}
+
+        <div className="flex flex-col gap-4">
+          {(nextPost != null || prevPost != null) && (
+            <div className="flex">
+              {nextPost != null && (
+                <Link href={`/blog/${nextPost._meta.uid}`}>
+                  <a className="text-gray-600 hover:text-black hover:underline text-sm">&#8592; Next post</a>
+                </Link>
+              )}
+              {prevPost != null && (
+                <Link href={`/blog/${prevPost._meta.uid}`}>
+                  <a className="text-gray-600 hover:text-black hover:underline text-sm ml-auto">
+                    Previous post &#8594;
+                  </a>
+                </Link>
+              )}
+            </div>
+          )}
+          <div>
+            <p className="block font-semibold text-gray-500">{formatLongDate(post._meta.firstPublicationDate)}</p>
+            <h1 className="text-2xl md:text-4xl font-extrabold mb-2">{post.title[0].text}</h1>
+            <p className="text-sm text-gray-600">{post.subtitle[0].text}</p>
           </div>
-        )}
-        <p className="block font-semibold text-gray-500">
-          {formatLongDate(post._meta.firstPublicationDate)}
-        </p>
-        <h1 className="text-2xl md:text-4xl font-extrabold mb-4">{post.title[0].text}</h1>
-        <p className="mb-4 text-sm text-gray-600">{post.subtitle[0].text}</p>
-        {post.categories != null && (
-          <div className="flex items-center justify-start flex-wrap gap-1 my-4">
-            {post.categories.map((item) => (
-              <Link href={`/blog?tag=${item.category._meta.uid}`}>
-                <a className="text-xs rounded px-2 py-1 bg-white">{item.category.name}</a>
-              </Link>
-            ))}
-          </div>
-        )}
-        {/* <hr className="mt-4 mb-6 md:my-10" /> */}
-        {post.thumbnail != null && (
-          <img className="w-full rounded" src={post.thumbnail.url} alt={post.thumbnail.alt} />
-        )}
-        <Grid className="gap-10 items-start mt-10">
-          <section className="prose !max-w-full !w-full">{RichText.render(post.content)}</section>
-          <section className="sticky top-4">
+
+          {post.categories != null && (
+            <div className="flex items-center justify-start flex-wrap gap-1">
+              {post.categories.map((item) => (
+                <Link href={`/blog?tag=${item.category._meta.uid}`}>
+                  <a className="text-xs rounded px-2 py-1 bg-white">{item.category.name}</a>
+                </Link>
+              ))}
+            </div>
+          )}
+          {/* <hr className="mt-4 mb-6 md:my-10" /> */}
+          {post.thumbnail != null && (
+            <img className="w-full rounded" src={post.thumbnail.url} alt={post.thumbnail.alt} />
+          )}
+        </div>
+        <div className="flex flex-col md:flex-row gap-10 items-start">
+          <section className="prose flex-2">{RichText.render(post.content)}</section>
+          <section className="sticky top-4 flex-1">
             <aside>
               <div className="p-4">
                 <h3 className="font-bold text-2xl">Latest posts</h3>
@@ -93,7 +105,7 @@ const BlogPost = observer(
               ))}
             </aside>
           </section>
-        </Grid>
+        </div>
       </Container>
     )
   },
@@ -101,19 +113,26 @@ const BlogPost = observer(
 
 export async function getStaticProps({ params }) {
   const post = await PrismicService.getBlogPost(params.slug)
-  const latestPosts = await PrismicService.getLatestBlogPosts(post._meta.id)
-  const nextPost = await PrismicService.getNextBlogPost(post._meta.id)
-  const prevPost = await PrismicService.getPreviousBlogPost(post._meta.id)
+  console.log('getting post', params, post)
+  if (post == null)
+    return {
+      notFound: true,
+    }
 
-  console.log('post', post.categories)
+  const results = await Promise.all([
+    PrismicService.getLatestBlogPosts(post._meta.id),
+    PrismicService.getNextBlogPost(post._meta.id),
+    PrismicService.getPreviousBlogPost(post._meta.id),
+  ])
 
   return {
     props: {
       post,
-      latestPosts,
-      nextPost,
-      prevPost,
+      latestPosts: results[0],
+      nextPost: results[1],
+      prevPost: results[2],
     },
+    revalidate: 60,
   }
 }
 
@@ -121,16 +140,8 @@ export async function getStaticPaths() {
   const posts = await PrismicService.getBlogPosts(null, null)
   return {
     paths: posts.map((post) => ({ params: { slug: post._meta.uid } })),
-    fallback: false,
+    fallback: 'blocking',
   }
 }
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr 33%;
-  }
-`
 
 export default BlogPost

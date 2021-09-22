@@ -13,8 +13,9 @@ type Options = {
 }
 
 function Post(opts: Options) {
+  console.log('categories', opts.categories)
   return (
-    <Article className="mb-4 group relative p-4 transition-shadow transition-color duration-200 rounded hover:shadow-xl hover:bg-white focus-within:bg-white focus-within:shadow-xl">
+    <article className="group relative p-4 transition-shadow transition-color duration-200 rounded hover:shadow-xl hover:bg-white focus-within:bg-white focus-within:shadow-xl">
       <h5 className="font-semibold text-lg">
         <LinkWrapper href={`/blog/${opts.uid}`} passHref>
           <Anchor
@@ -30,13 +31,13 @@ function Post(opts: Options) {
       {opts.categories != null && (
         <div className="flex items-center justify-start flex-wrap gap-1">
           {opts.categories.map((item) => (
-            <Link href={`/blog?tag=${item.category._meta.uid}`}>
+            <Link key={`tag-${item.category._meta.uid}`} href={`/blog?tag=${item.category._meta.uid}`}>
               <a className="text-xs rounded px-2 py-1 bg-white group-hover:bg-gray-50 text-gray-500">{item.category.name}</a>
             </Link>
           ))}
         </div>
       )}
-    </Article>
+    </article>
   )
 }
 
@@ -64,11 +65,5 @@ const Anchor = styled.a`
     left: 0;
     right: 0;
     bottom: 0;
-  }
-`
-
-const Article = styled.article`
-  &:last-child {
-    margin-bottom: 0;
   }
 `

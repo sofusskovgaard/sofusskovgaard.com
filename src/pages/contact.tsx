@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -14,8 +14,19 @@ import { useStores } from 'utils/stores'
 // components
 const Container = dynamic(() => import('components/container'))
 
-const Contact = observer(({ posts }: { posts: Document[] }) => {
+const Contact = observer(() => {
   const stores = useStores()
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [subject, setSubject] = useState("")
+  const [message, setMessage] = useState("")
+
+  async function submitContactForm() {
+    const response = await fetch("/api/contact", { method: "POST", body: JSON.stringify({ name, email, subject, message }) })
+    const json = await response.json()
+    console.log('response from api', json)
+  }
+
   return (
     <Container>
       <Head>
@@ -35,34 +46,25 @@ const Contact = observer(({ posts }: { posts: Document[] }) => {
         <section className="grid grid-cols-2 gap-4">
           <div className="col-span-2 md:col-span-1">
             <label className="block font-medium mb-1">Name</label>
-            <input type="text" name="name" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="John Doe" />
+            <input value={name} onChange={e => setName(() => e.target.value)} type="text" name="name" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="John Doe" />
           </div>
           <div className="col-span-2 md:col-span-1">
             <label className="block font-medium mb-1">Email</label>
-            <input type="email" name="email" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="john.doe@mail.com" />
+            <input value={email} onChange={e => setEmail(() => e.target.value)} type="email" name="email" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="john.doe@mail.com" />
           </div>
           <div className="col-span-2">
             <label className="block font-medium mb-1">Subject</label>
-            <input type="text" name="subject" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="Message of the utmost importance" />
+            <input value={subject} onChange={e => setSubject(() => e.target.value)} type="text" name="subject" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" placeholder="Message of the utmost importance" />
           </div>
           <div className="col-span-2">
             <label className="block font-medium mb-1">Message</label>
-            <textarea name="message" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" rows={9} placeholder="Hello there." />
+            <textarea value={message} onChange={e => setMessage(() => e.target.value)} name="message" className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm" rows={9} placeholder="Hello there." />
           </div>
-          <button className="col-span-2 px-4 py-2 font-medium rounded bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200">Send message</button>
+          <button onClick={submitContactForm.bind(this)} className="col-span-2 px-4 py-2 font-medium rounded bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200">Send message</button>
         </section>
       </div>
     </Container>
   )
 })
-
-export async function getStaticProps() {
-  const posts = await PrismicService.getBlogPosts(null, null)
-  return {
-    props: {
-      posts,
-    },
-  }
-}
 
 export default Contact

@@ -1,13 +1,12 @@
 import { action, makeObservable, observable, when } from 'mobx'
 
-import { PrismicLink } from 'apollo-link-prismic'
-import { ApolloClient, DocumentNode, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import gql from 'graphql-tag'
+import Prismic from '@prismicio/client'
+import { Document } from '@prismicio/client/types/documents'
+import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
+import { QueryOptions } from '@prismicio/client/types/ResolvedApi'
 
 class PrismicService {
-  blog_posts = []
-
-  gqlClient: ApolloClient<NormalizedCacheObject>
+  blog_posts: Document[] = []
 
   loading = false
   loaded = false
@@ -24,14 +23,6 @@ class PrismicService {
       getBlogPost: action,
     })
 
-    this.gqlClient = new ApolloClient<NormalizedCacheObject>({
-      ssrMode: typeof window === 'undefined',
-      link: PrismicLink({
-        uri: process.env.PRISMIC_URL + '/graphql',
-      }),
-      cache: new InMemoryCache(),
-    })
-
     this.getAllBlogPosts()
   }
 
@@ -39,218 +30,113 @@ class PrismicService {
 
   async getAllBlogPosts(): Promise<void> {
     this.loading = true
-    const results = await this._getAllOfType(
-      (after) => gql`
-        query { 
-          allBlog_posts(sortBy: meta_firstPublicationDate_DESC, first: 20${after != null ? `, after: "${after}"` : ''}) {
-            totalCount
-            pageInfo {
-              hasPreviousPage
-              hasNextPage
-              startCursor
-              endCursor
-            }
-            edges {
-              node {
-                _meta {
-                  id
-                  uid
-                  firstPublicationDate
-                  lastPublicationDate
-                }
-                title
-                subtitle
-                content
-                thumbnail
-                seo_keys
-                seo_description
-                categories {
-                  category {
-                    __typename
-                    ... on Category {
-                      _meta {
-                        id
-                        uid
-                        firstPublicationDate
-                        lastPublicationDate
-                      }
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-    )
+    
+    const results = await this._getAllOfType(Prismic.Predicates.at('document.type', 'blog_post'))
+
     results.forEach(item => this.blog_posts.push(item))
+
     this.loading = false
     this.loaded = true
   }
 
-  async getLatestBlogPosts(id: string, pageSize: number = 3): Promise<any> {
-    await when(() => this.loaded)
-
-    return this.blog_posts.filter((post) => post._meta.id !== id).slice(0, 2)
+  async getLatestBlogPosts(id: string, pageSize: number = 3): Promise<Document[]> {
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'blog_post'), null, 1, 4)
+    return response.results.filter((post) => post.id !== id).slice(0, 2)
   }
 
-  async getBlogPosts(page: number = 1, pageSize: number = 20): Promise<any> {
-    await when(() => this.loaded)
-
-    if (page == null && pageSize == null) return this.blog_posts
-    return this.blog_posts.slice(page > 1 ? (page - 1) * pageSize : 0, page * pageSize)
+  async getBlogPosts(page: number = 1, pageSize: number = 20): Promise<Document[] | ApiSearchResponse> {
+    if (page == null && pageSize == null) {
+      const response = await this._getAllOfType(Prismic.Predicates.at('document.type', 'blog_post'))
+      return response
+    }
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'blog_post'), null, page, pageSize)
+    return response
   }
 
-  async getBlogPost(uid: string): Promise<any> {
-    await when(() => this.loaded)
-
-    return this.blog_posts.find((post) => post._meta.uid == uid)
+  async getBlogPost(uid: string): Promise<Document> {
+    const response = await this._getOneOfType([
+      Prismic.Predicates.at('my.blog_post.uid', uid)
+    ])
+    return response
   }
 
-  async getNextBlogPost(id: string): Promise<any | null> {
-    await when(() => this.loaded)
-    const index = this.blog_posts.findIndex((post) => post._meta.id == id)
-
-    return index > 0 ? this.blog_posts[index - 1] : null
+  async getNextBlogPost(id: string): Promise<Document> {
+    const response = await this._getOneOfType([
+      Prismic.Predicates.at('document.type', 'blog_post')
+    ], { orderings: '[document.first_publication_date desc]', before: id })
+    return response
   }
 
-  async getPreviousBlogPost(id: string): Promise<any | null> {
-    await when(() => this.loaded)
-    var index = this.blog_posts.findIndex((post) => post._meta.id == id)
-    return index < this.blog_posts.length - 1 ? this.blog_posts[index + 1] : null
+  async getPreviousBlogPost(id: string): Promise<Document> {
+    const response = await this._getOneOfType([
+      Prismic.Predicates.at('document.type', 'blog_post')
+    ], { orderings: '[document.first_publication_date desc]', after: id })
+    return response
   }
 
   //#endregion
 
   //#region Work experience
 
-  async getWorkExperience() {
-    const results = await this._getAllOfType(
-      (after) => gql`
-        query { 
-          allWork_experiences(first: 20${after != null ? `, after: "${after}"` : ''}) {
-            totalCount
-            pageInfo {
-              hasPreviousPage
-              hasNextPage
-              startCursor
-              endCursor
-            }
-            edges {
-              node {
-                _meta {
-                  id
-                  uid
-                  firstPublicationDate
-                  lastPublicationDate
-                }
-                job_title
-                description
-                company
-                company_url {
-                  __typename
-                  ... on _ExternalLink {
-                    url
-                    target
-                  }
-                }
-                started
-                stopped
-              }
-            }
-          }
-        }
-      `,
-    )
-    return results
+  async getWorkExperience(): Promise<ApiSearchResponse> {
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'work_experience'), null, 1, 100)
+    return response
+  }
+
+  //#endregion
+
+  //#region Education
+
+  async getEducation(): Promise<ApiSearchResponse> {
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'education'), null, 1, 100)
+    return response
   }
 
   //#endregion
 
   //#region Introduction
 
-  async getIntroduction() {
-    const results = this._getAllOfType(() => gql`
-      query { 
-        allIntroductions {
-          totalCount
-          pageInfo {
-            hasPreviousPage
-            hasNextPage
-            startCursor
-            endCursor
-          }
-          edges {
-            node {
-              _meta {
-                id
-                uid
-                firstPublicationDate
-                lastPublicationDate
-              }
-              title
-              subtitle
-              introduction
-              portrait
-            }
-          }
-        }
-      }
-    `)
-    return results
+  async getIntroduction(): Promise<Document> {
+    const response = await this._getOneOfType(Prismic.Predicates.at('document.type', 'introduction'))
+    return response
   }
 
   //#endregion
 
   //#region Categories
   
-  async getCategories() {
-    const results = this._getAllOfType(() => gql`
-      query { 
-        allCategorys {
-          totalCount
-          pageInfo {
-            hasPreviousPage
-            hasNextPage
-            startCursor
-            endCursor
-          }
-          edges {
-            node {
-              _meta {
-                id
-                uid
-                firstPublicationDate
-                lastPublicationDate
-              }
-              name
-            }
-          }
-        }
-      }
-    `)
-    return results
+  async getCategories(): Promise<ApiSearchResponse> {
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'category'), null, 1, 100)
+    return response
   }
 
   //#endregion
 
-  private async _getAllOfType(query: (after?: string) => DocumentNode) {
-    const results = []
+  private _createAPIClient() {
+    return Prismic.client(process.env.PRISMIC_URL + "/api/v2")
+  }
 
-    let _result = await this.gqlClient.query({
-      query: query(),
-    })
-    let key = Object.keys(_result.data)[0]
+  private async _getOneOfType(query: string | string[], options: QueryOptions = null) {
+    const client = this._createAPIClient()
+    const response = await client.queryFirst(query, options)
+    return response
+  }
 
-    _result.data[key].edges.forEach((edge) => results.push(edge.node))
+  private async _getManyOfType(query: string | string[], options: QueryOptions = null, page: number = 1, pageSize: number = 10) {
+    const client = this._createAPIClient()
+    const response = await client.query(query, { orderings: '[document.first_publication_date desc]', page, pageSize, ...options })
+    return response
+  }
 
-    while (_result.data[key].pageInfo.hasNextPage) {
-      _result = await this.gqlClient.query({
-        query: query(_result.data[key].pageInfo.endCursor),
-      })
+  private async _getAllOfType(query: string | string[]) {
+    const results: Document[] = []
 
-      _result.data[key].edges.forEach((edge) => results.push(edge.node))
+    let response = await this._getManyOfType(query, null, 1, 100)
+    response.results.forEach(result => results.push(result))
+
+    while (response.total_pages > response.page) {
+      response = await this._getManyOfType(query, null, response.page + 1, 100)
+      response.results.forEach(result => results.push(result))
     }
 
     return results

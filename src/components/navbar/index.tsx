@@ -11,7 +11,7 @@ const Navbar = observer(() => {
   const router = useRouter()
   return (
     <Container>
-      <ul className="flex gap-2 py-2 my-10">
+      <ul className="flex gap-2 py-2 my-10 justify-center">
         <li>
           <Link href="/">
             <a className={cx("px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200", router.pathname == "/" && "bg-white shadow-xl")}>Home</a>
