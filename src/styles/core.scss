@@ -29,3 +29,9 @@ html {
   background: linear-gradient(135deg, #fff 0%, #ddd 100%);
   background-image: url('/topography.svg');
 }
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}

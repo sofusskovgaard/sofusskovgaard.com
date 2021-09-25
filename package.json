@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 3001"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
@@ -24,25 +24,26 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "postcss": "^8.2.8",
     "prettier": "^2.2.1",
-    "redux-devtools": "^3.7.0",
     "sass": "^1.32.8",
     "tailwindcss": "^2.0.4",
     "typescript": "^4.2.3"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.13.15",
-    "@reduxjs/toolkit": "^1.5.1",
-    "@types/react-redux": "^7.1.16",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@prismicio/client": "^5.1.0",
+    "@tailwindcss/typography": "^0.4.1",
     "@types/styled-components": "^5.1.9",
     "classnames": "^2.3.1",
     "date-fns": "^2.21.1",
-    "feather-icons": "^4.28.0",
+    "mobx": "^6.3.2",
+    "mobx-react": "^7.2.0",
     "next": "^10.2.0",
+    "postmark": "^2.7.8",
+    "prismic-reactjs": "^1.3.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-feather": "^2.0.9",
-    "react-redux": "^7.2.4",
-    "redux": "^4.1.0",
     "styled-components": "^5.2.3"
   }
 }

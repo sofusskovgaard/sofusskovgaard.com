@@ -1,75 +1,124 @@
 import React, { useEffect } from 'react'
+import { observer } from 'mobx-react'
 import Head from 'next/head'
-import Image from 'next/image'
-import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 
-/**
- * Components
- */
-import Post from 'components/post'
-import Repository from 'components/repository'
-import List from 'components/list'
-import Container from 'components/container'
-import Loader from 'components/loader'
-import styled from 'styled-components'
+// data access
+import PrismicService from 'services/prismic-service'
 
-const Home: NextPage = () => {
+// utils
+import { useStores } from 'utils/stores'
+import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
+import { Document } from '@prismicio/client/types/documents'
+import { GetStaticPropsResult } from 'next'
+
+// components
+const Post = dynamic(() => import('components/post'))
+const List = dynamic(() => import('components/list'))
+const Container = dynamic(() => import('components/container'))
+const Introduction = dynamic(() => import('components/introduction'))
+
+const WorkExperience = dynamic(() => import('components/work-experience'))
+const Education = dynamic(() => import('components/education'))
+
+const Home = observer(({ posts, components }: Props) => {
+  const stores = useStores()
+
   return (
-    <Container className="pt-4 md:pt-12 pb-4">
-      <div className="flex flex-col md:flex-row">
-        <section className="block md:hidden mb-4">
-          <h1 className="font-bold text-3xl mb-1">Sofus Skovgaard</h1>
-          <h3 className="font-medium uppercase text-gray-500">Developer / Designer</h3>
-        </section>
+    <Container>
+      <Head>
+        <title>Welcome &mdash; {stores.uiStore.app_name}</title>
+        <meta name="keywords" content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts" />
+        <meta name="description" content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you cand find my portfolio, blog and ways to contact me." />
+      </Head>
 
-        <div className="flex-1 mb-4 md:mb-0">
-          <Image
-            src="/images/sofus_skovgaard.jpg"
-            className="rounded"
-            alt="Picture of Sofus Skovgaard"
-            height={400}
-            width={400}
-            layout="responsive"
-          />
+      <Introduction model={components.introduction} />
+
+      <div className="flex flex-col md:flex-row gap-4 md:gap-10">
+        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+          {components.workExperience != null && (
+            <List
+              title="Work experience"
+              render={(exp: Document) => (
+                <WorkExperience
+                  key={exp.id}
+                  job_title={exp.data.job_title}
+                  company={exp.data.company}
+                  company_url={exp.data.company_url.url}
+                  started={exp.data.started}
+                  stopped={exp.data.stopped}
+                />
+              )}
+              model={components.workExperience.results}
+            />
+          )}
+
+          {components.education != null && (
+            <List
+              title="Education"
+              render={(edu: Document) => (
+                <Education
+                  key={edu.id}
+                  subject={edu.data.subject}
+                  school={edu.data.shool}
+                  started={edu.data.started}
+                  stopped={edu.data.stopped}
+                />
+              )}
+              model={components.education.results}
+            />
+          )}
         </div>
 
-        <div className="flex flex-col flex-1 md:ml-4">
-          <section className="hidden md:block mb-4">
-            <h1 className="font-bold text-3xl mb-1">Sofus Skovgaard</h1>
-            <h3 className="font-medium uppercase text-gray-500">Developer / Designer</h3>
-          </section>
-
-          <section>
-            <p className="mb-4">
-              Culpa nostrud sit et ex aute ea. Deserunt deserunt ad cillum deserunt veniam duis ipsum eu elit sit. Id ea
-              qui velit nostrud ullamco.
-            </p>
-            <p>
-              Quis non est reprehenderit fugiat tempor aliqua. Lorem deserunt enim enim aliqua laborum dolore ullamco
-              voluptate culpa adipisicing aliqua laboris Lorem. Ad qui est ea nostrud irure duis adipisicing et minim
-              Lorem eiusmod ipsum consectetur.
-            </p>
-          </section>
+        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+          {posts != null && (
+            <List
+              title="Latest posts"
+              link={{ href: '/blog', text: 'All posts' }}
+              render={(post: Document) => (
+                <Post
+                  key={post.id}
+                  doc={post}
+                  hideThumbnail
+                />
+              )}
+              model={posts.results}
+              emptyText="There are no posts"
+            />
+          )}
         </div>
       </div>
-
-      {/* <List<PostModel>
-        className="col-start-1 md:col-start-2 md:row-start-2"
-        title="Latest posts"
-        link={{ href: '#', text: 'All posts' }}
-        render={(model) => <Post key={model.id} post={model} />}
-        model={posts}
-      />
-
-      <List<RepositoryModel>
-          className="md:col-start-1 md:row-start-2"
-          title="Repositories"
-          link={{ href: '#', text: 'All repositories' }}
-          render={(model) => <Repository key={model.id} data={model} />}
-          model={}
-        /> */}
     </Container>
   )
+})
+
+type Props = {
+  posts: ApiSearchResponse
+  components: {
+    workExperience: ApiSearchResponse
+    education: ApiSearchResponse
+    introduction: Document
+  }
+}
+
+export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
+  const posts = await PrismicService.getBlogPosts(1, 5) as ApiSearchResponse
+
+  const workExperience = await PrismicService.getWorkExperience()
+  const education = await PrismicService.getEducation()
+  const introduction = await PrismicService.getIntroduction()
+
+  return {
+    props: {
+      posts,
+      components: {
+        introduction,
+        workExperience,
+        education,
+      },
+    },
+    revalidate: 60,
+  }
 }
 
 export default Home
