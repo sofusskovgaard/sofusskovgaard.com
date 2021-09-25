@@ -1,4 +1,5 @@
 import { action, makeObservable, observable, when } from 'mobx'
+import getConfig from "next/config"
 
 import Prismic from '@prismicio/client'
 import { Document } from '@prismicio/client/types/documents'
@@ -6,6 +7,8 @@ import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
 import { QueryOptions } from '@prismicio/client/types/ResolvedApi'
 
 class PrismicService {
+  serverRuntimeConfig = getConfig().serverRuntimeConfig
+
   blog_posts: Document[] = []
 
   loading = false
@@ -119,7 +122,7 @@ class PrismicService {
   //#endregion
 
   private _createAPIClient() {
-    return Prismic.client(process.env.PRISMIC_URL + "/api/v2")
+    return Prismic.client(this.serverRuntimeConfig.PRISMIC_URL + "/api/v2")
   }
 
   private async _getOneOfType(query: string | string[], options: QueryOptions = null) {

@@ -1,7 +1,10 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
+import getConfig from "next/config"
 
 class MyDocument extends Document {
+  serverRuntimeConfig = getConfig().serverRuntimeConfig
+
   static async getInitialProps(ctx) {
     const sheet = new ServerStyleSheet()
     const originalRenderPage = ctx.renderPage
@@ -47,14 +50,14 @@ class MyDocument extends Document {
             rel="stylesheet"
           ></link>
 
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS_KEY}`} />
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${this.serverRuntimeConfig.GOOGLE_ANALYTICS_KEY}`} />
           <script
             dangerouslySetInnerHTML={{
               __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
+            gtag('config', '${this.serverRuntimeConfig.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
               page_path: window.location.pathname,
             });
           `,

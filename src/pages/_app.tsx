@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import getConfig from "next/config"
 
 import { StoreProvider } from 'utils/stores'
 
@@ -19,8 +20,9 @@ function MyApp({ Component, pageProps }: { Component: NextPage; pageProps: any }
   const router = useRouter()
 
   useEffect(() => {
+    const { serverRuntimeConfig } = getConfig()
     const handleRouteChange = (url) => {
-      ;(window as any).gtag('config', process.env.GOOGLE_ANALYTICS_KEY, {
+      ;(window as any).gtag('config', serverRuntimeConfig.GOOGLE_ANALYTICS_KEY, {
         page_path: url,
       })
       console.log('logged', url)

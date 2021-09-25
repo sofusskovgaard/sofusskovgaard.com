@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ServerClient } from 'postmark'
+import getConfig from "next/config"
 
 export type RequestBody = {
   name: string
@@ -40,8 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         message: body.message,
         timestamp: new Date().toISOString()
       }
-      console.log('model', model)
-      const client = new ServerClient(process.env.POSTMARK_APIKEY)
+      const serverRuntimeConfig = getConfig().serverRuntimeConfig
+      const client = new ServerClient(serverRuntimeConfig.POSTMARK_APIKEY)
       const response = await client.sendEmailWithTemplate({
         From: 'no-reply@sofusskovgaard.com',
         To: 'privat@sofusskovgaard.com',

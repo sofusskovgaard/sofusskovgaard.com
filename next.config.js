@@ -37,4 +37,9 @@ module.exports = {
       },
     ]
   },
+  serverRuntimeConfig: {
+    PRISMIC_URL: process.env.PRISMIC_URL,
+    POSTMARK_APIKEY: process.env.POSTMARK_APIKEY,
+    GOOGLE_ANALYTICS_KEY: process.env.GOOGLE_ANALYTICS_KEY,
+  },
 }

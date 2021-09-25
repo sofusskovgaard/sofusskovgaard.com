@@ -25,7 +25,7 @@ function WorkExperience(opts: Options) {
   return (
     <article className="p-4">
       <h5 className="font-semibold text-lg">{opts.job_title}</h5>
-      <a href={opts.company_url} className="text-sm font-medium underline" target="_blank">
+      <a href={opts.company_url} className="text-sm font-medium underline" target="_blank" rel="noopener">
         {opts.company}
       </a>
       <small className="block text-gray-600">
