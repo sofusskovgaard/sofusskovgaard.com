@@ -40,8 +40,8 @@ class PrismicService {
   }
 
   async getLatestBlogPosts(id: string, pageSize: number = 3): Promise<Document[]> {
-    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'blog_post'), null, 1, 4)
-    return response.results.filter((post) => post.id !== id).slice(0, 2)
+    const response = await this._getManyOfType(Prismic.Predicates.at('document.type', 'blog_post'), null, 1, pageSize+1)
+    return response.results.filter((post) => post.id !== id).slice(0, pageSize)
   }
 
   async getBlogPosts(page: number = 1, pageSize: number = 20): Promise<Document[] | ApiSearchResponse> {
@@ -55,23 +55,29 @@ class PrismicService {
 
   async getBlogPost(uid: string): Promise<Document> {
     const response = await this._getOneOfType([
+      Prismic.Predicates.at('document.type', 'blog_post'),
       Prismic.Predicates.at('my.blog_post.uid', uid)
     ])
     return response
   }
 
   async getNextBlogPost(id: string): Promise<Document> {
-    const response = await this._getOneOfType([
+    const response = await this._getManyOfType([
       Prismic.Predicates.at('document.type', 'blog_post')
-    ], { orderings: '[document.first_publication_date desc]', before: id })
-    return response
+    ], {
+      orderings: '[document.first_publication_date]',
+      after: id
+    }, 1, 1)
+    return response.results[0] ?? null
   }
 
   async getPreviousBlogPost(id: string): Promise<Document> {
-    const response = await this._getOneOfType([
+    const response = await this._getManyOfType([
       Prismic.Predicates.at('document.type', 'blog_post')
-    ], { orderings: '[document.first_publication_date desc]', after: id })
-    return response
+    ], {
+      after: id
+    }, 1, 1)
+    return response.results[0] ?? null
   }
 
   //#endregion

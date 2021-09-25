@@ -1,86 +1,87 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import { GetServerSidePropsContext, GetServerSidePropsResult, GetStaticPropsResult, NextPageContext } from 'next'
-import Link from 'next/link'
+import { GetServerSidePropsResult, GetStaticPropsResult } from 'next'
 
 import PrismicService from 'services/prismic-service'
 import { useStores } from 'utils/stores'
+import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
+import styled from 'styled-components'
 
 // Components
 const Container = dynamic(() => import('components/container'))
 const Post = dynamic(() => import('components/post'))
 
-const Blog = observer(({ posts, categories }: { posts: any[]; categories: any[] }) => {
+const Blog = observer(({ posts }: Props) => {
   const stores = useStores()
-  const router = useRouter()
-
-  const filteredPosts = useCallback(
-    () =>
-      posts.filter(
-        (post) =>
-          post.categories != null && post.categories.some((item) => item.category._meta.uid === router.query['tag']),
-      ),
-    [router.query['tag']],
-  )
 
   return (
     <Container>
       <Head>
         <title>Blog &mdash; {stores.uiStore.app_name}</title>
+        <meta name="keywords" content="sofus,skovgaard,blog,react,csharp,dotnet,javascript,js,typescript,ts" />
+        <meta name="description" content="This is my blog where i write about different topics, mostly software development and design related." />
       </Head>
 
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold mr-4">Blog</h1>
+        <div className="flex items-center">
+          <h1 className="text-4xl font-bold">Blog</h1>
+          <span className="flex-1 my-auto inline-block w-100 border-b border-gray-200 ml-4"></span>
         </div>
-        {categories != null && (
-          <div className="flex items-center justify-start flex-wrap gap-1">
-            {categories.map((item) => (
-              <Link key={`tag-${item._meta.uid}`} href={`/blog?tag=${item._meta.uid}`}>
-                <a className="text-xs rounded px-2 py-1 bg-white">{item.name}</a>
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
 
-      {router.query['tag'] != null && filteredPosts().length == 0 ? (
-        <div className="flex items-center justify-center">
-          <p className="my-10">There are no posts with that tag.</p>
-        </div>
+      {posts.results.length > 0 ? (
+        <Grid>
+          {posts.results.map((post, i) => (
+            <Post key={post.id} doc={post} isMain={i == 0} />
+          ))}
+        </Grid>
       ) : (
-        <React.Fragment>
-          <div className="flex flex-col gap-4">
-            {(router.query['tag'] != null ? filteredPosts() : posts).map((post) => (
-              <Post
-                key={post._meta.id}
-                uid={post._meta.uid}
-                title={post.title[0].text}
-                subtitle={post.subtitle[0].text}
-                published_at={new Date(post._meta.firstPublicationDate)}
-                categories={post.categories}
-              />
-            ))}
-          </div>
-        </React.Fragment>
+        <div className="flex items-center justify-center">
+          <span className="text-center text-sm text-gray-400">No posts to show</span>
+        </div>
       )}
     </Container>
   )
 })
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const posts = await PrismicService.getBlogPosts(1, 10)
-  console.log('getting posts', posts)
-  const categories = await PrismicService.getCategories()
+type Props = {
+  posts: ApiSearchResponse
+}
+
+export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
+  const posts = (await PrismicService.getBlogPosts(1, 10)) as ApiSearchResponse
   return {
     props: {
       posts,
-      categories,
-    }
+    },
+    revalidate: 60,
   }
 }
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+  grid-template-rows: repeat(auto-fit, auto);
+  align-items: flex-start;
+  gap: 1rem;
+
+  article:nth-child(8n + 0),
+  article:nth-child(1) {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+  }
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+
+    article:nth-child(8n + 0),
+    article:nth-child(1) {
+      grid-column: span 1 / span 1;
+      grid-row: span 1 / span 1;
+    }
+  }
+`
 
 export default Blog

@@ -21,79 +21,76 @@ const Introduction = dynamic(() => import('components/introduction'))
 const WorkExperience = dynamic(() => import('components/work-experience'))
 const Education = dynamic(() => import('components/education'))
 
-const Home = observer(
-  ({ posts, components }: Props) => {
-    const stores = useStores()
+const Home = observer(({ posts, components }: Props) => {
+  const stores = useStores()
 
-    return (
-      <Container>
-        <Head>
-          <title>{stores.uiStore.app_name}</title>
-        </Head>
+  return (
+    <Container>
+      <Head>
+        <title>Welcome &mdash; {stores.uiStore.app_name}</title>
+        <meta name="keywords" content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts" />
+        <meta name="description" content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you cand find my portfolio, blog and ways to contact me." />
+      </Head>
 
-        <Introduction model={components.introduction} />
+      <Introduction model={components.introduction} />
 
-        <div className="flex flex-col md:flex-row gap-4 md:gap-10">
-          <div className="flex flex-col flex-1 gap-4 md:gap-10">
-            {components.workExperience != null && (
-              <List
-                title="Work experience"
-                render={(exp: Document) => (
-                  <WorkExperience
-                    key={exp.id}
-                    job_title={exp.data.job_title}
-                    company={exp.data.company}
-                    company_url={exp.data.company_url.url}
-                    started={exp.data.started}
-                    stopped={exp.data.stopped}
-                  />
-                )}
-                model={components.workExperience.results}
-              />
-            )}
+      <div className="flex flex-col md:flex-row gap-4 md:gap-10">
+        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+          {components.workExperience != null && (
+            <List
+              title="Work experience"
+              render={(exp: Document) => (
+                <WorkExperience
+                  key={exp.id}
+                  job_title={exp.data.job_title}
+                  company={exp.data.company}
+                  company_url={exp.data.company_url.url}
+                  started={exp.data.started}
+                  stopped={exp.data.stopped}
+                />
+              )}
+              model={components.workExperience.results}
+            />
+          )}
 
-            {components.education != null && (
-              <List
-                title="Education"
-                render={(edu: Document) => (
-                  <Education
-                    key={edu.id}
-                    subject={edu.data.subject}
-                    school={edu.data.shool}
-                    started={edu.data.started}
-                    stopped={edu.data.stopped}
-                  />
-                )}
-                model={components.education.results}
-              />
-            )}
-          </div>
-
-          <div className="flex flex-col flex-1 gap-4 md:gap-10">
-            {posts != null && (
-              <List
-                title="Latest posts"
-                link={{ href: '/blog', text: 'All posts' }}
-                render={(post: Document) => (
-                  <Post
-                    key={post.id}
-                    uid={post.uid}
-                    title={post.data.title[0].text}
-                    subtitle={post.data.subtitle[0].text}
-                    published_at={new Date(post.first_publication_date)}
-                    categories={post.data.categories}
-                  />
-                )}
-                model={posts.results}
-                emptyText="There are no posts"
-              />
-            )}
-          </div>
+          {components.education != null && (
+            <List
+              title="Education"
+              render={(edu: Document) => (
+                <Education
+                  key={edu.id}
+                  subject={edu.data.subject}
+                  school={edu.data.shool}
+                  started={edu.data.started}
+                  stopped={edu.data.stopped}
+                />
+              )}
+              model={components.education.results}
+            />
+          )}
         </div>
-      </Container>
-    )
-  },
-)
+
+        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+          {posts != null && (
+            <List
+              title="Latest posts"
+              link={{ href: '/blog', text: 'All posts' }}
+              render={(post: Document) => (
+                <Post
+                  key={post.id}
+                  doc={post}
+                  hideThumbnail
+                />
+              )}
+              model={posts.results}
+              emptyText="There are no posts"
+            />
+          )}
+        </div>
+      </div>
+    </Container>
+  )
+})
 
 type Props = {
   posts: ApiSearchResponse
@@ -106,20 +103,21 @@ type Props = {
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
   const posts = await PrismicService.getBlogPosts(1, 5) as ApiSearchResponse
-  console.log('posts', posts)
+
   const workExperience = await PrismicService.getWorkExperience()
   const education = await PrismicService.getEducation()
   const introduction = await PrismicService.getIntroduction()
+
   return {
     props: {
       posts,
       components: {
         introduction,
         workExperience,
-        education
+        education,
       },
     },
-    revalidate: 60
+    revalidate: 60,
   }
 }
 

@@ -3,10 +3,11 @@ import { observer } from 'mobx-react'
 import Link from 'next/link'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { Document } from '@prismicio/client/types/documents'
+import { GetStaticPropsResult } from 'next'
 
 // data access
 import PrismicService from 'services/prismic-service'
-import { Document } from '@prismicio/client/types/documents'
 
 // utils
 import { useStores } from 'utils/stores'
@@ -20,32 +21,54 @@ const Sitemap = observer(({ posts }: { posts: any[] }) => {
     <Container>
       <Head>
         <title>Sitemap &mdash; {stores.uiStore.app_name}</title>
+        <meta name="robots" content="noindex" />
       </Head>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-max gap-4">
-        {posts.map(post => {
-          return (
-            <div key={post._meta.uid} className="flex items-center justify-center text-center">
-              <Link href={`/blog/${post._meta.uid}`}>
-                <a className="">
-                  {post.title[0].text}
-                </a>
-              </Link>
-            </div>
-          )
-        })}
-      </div>
+
+      <ul className="flex flex-col list-disc">
+        <li>
+          <Link href="/">
+            <a>Index</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/blog">
+            <a>Blog</a>
+          </Link>
+          {posts.length > 0 && (
+            <ul className="flex flex-col pl-4 list-disc">
+              {posts.map((post) => {
+                return (
+                  <li key={post.uid}>
+                    <Link href={`/blog/${post.uid}`}>
+                      <a>{post.data.title[0].text}</a>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </li>
+        <li>
+          <Link href="/contact">
+            <a>Contact</a>
+          </Link>
+        </li>
+      </ul>
     </Container>
   )
 })
 
-export async function getStaticProps() {
-  const posts = await PrismicService.getBlogPosts(null, null)
+type Props = {
+  posts: Document[]
+}
+
+export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
+  const posts = (await PrismicService.getBlogPosts(null, null)) as Document[]
   return {
     props: {
-      posts
+      posts,
     },
-    revalidate: 60
+    revalidate: 60,
   }
 }
 

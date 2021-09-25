@@ -1,10 +1,11 @@
 import React from 'react'
 import { RichText } from 'prismic-reactjs'
 import { Document } from '@prismicio/client/types/documents'
+import styled from 'styled-components'
 
 const Introduction = ({ model }: { model: Document }) => {
   return (
-    <div className="grid gap-y-4 md:gap-y-0 gap-x-4 md:gap-x-10 grid-cols-1 md:grid-cols-2" style={{ gridTemplateRows: 'max-content' }}>
+    <Grid className="gap-10">
       <img
           alt={model.data.portrait.alt}
           src={model.data.portrait.url}
@@ -21,8 +22,20 @@ const Introduction = ({ model }: { model: Document }) => {
       <section className="prose w-full row-start-3 md:row-start-2 md:col-start-2">
         {RichText.render(model.data.introduction)}
       </section>
-    </div>
+    </Grid>
   )
 }
 
 export default Introduction
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+  }
+`
