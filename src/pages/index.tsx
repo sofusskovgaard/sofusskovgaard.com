@@ -29,7 +29,7 @@ const Home = observer(({ posts, components }: Props) => {
       <Head>
         <title>Welcome &mdash; {stores.uiStore.app_name}</title>
         <meta name="keywords" content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts" />
-        <meta name="description" content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you cand find my portfolio, blog and ways to contact me." />
+        <meta name="description" content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you can find my portfolio, blog and ways to contact me." />
       </Head>
 
       <Introduction model={components.introduction} />
