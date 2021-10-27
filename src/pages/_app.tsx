@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import getConfig from "next/config"
+import getConfig from 'next/config'
 
 import { StoreProvider } from 'utils/stores'
 
 const Navbar = dynamic(() => import('components/navbar'))
 const Footer = dynamic(() => import('components/footer'))
 
-import '@fortawesome/fontawesome-free/scss/fontawesome.scss'
-import '@fortawesome/fontawesome-free/scss/regular.scss'
-import '@fortawesome/fontawesome-free/scss/solid.scss'
-import '@fortawesome/fontawesome-free/scss/brands.scss'
+import '@fortawesome/fontawesome-free/css/fontawesome.min.css'
+import '@fortawesome/fontawesome-free/css/regular.min.css'
+import '@fortawesome/fontawesome-free/css/solid.min.css'
+import '@fortawesome/fontawesome-free/css/brands.min.css'
 
 import 'styles/core.scss'
 import { useRouter } from 'next/router'
