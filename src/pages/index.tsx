@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
@@ -28,8 +28,14 @@ const Home = observer(({ posts, components }: Props) => {
     <Container>
       <Head>
         <title>Welcome &mdash; {stores.uiStore.app_name}</title>
-        <meta name="keywords" content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts" />
-        <meta name="description" content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you can find my portfolio, blog and ways to contact me." />
+        <meta
+          name="keywords"
+          content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts"
+        />
+        <meta
+          name="description"
+          content="My name is Sofus Skovgaard and i'm Software Developer and Designer. This is my website where you can find my portfolio, blog and ways to contact me."
+        />
       </Head>
 
       <Introduction model={components.introduction} />
@@ -75,13 +81,7 @@ const Home = observer(({ posts, components }: Props) => {
             <List
               title="Latest posts"
               link={{ href: '/blog', text: 'All posts' }}
-              render={(post: Document) => (
-                <Post
-                  key={post.id}
-                  doc={post}
-                  hideThumbnail
-                />
-              )}
+              render={(post: Document) => <Post key={post.id} doc={post} hideThumbnail />}
               model={posts.results}
               emptyText="There are no posts"
             />
@@ -102,7 +102,7 @@ type Props = {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
-  const posts = await PrismicService.getBlogPosts(1, 5) as ApiSearchResponse
+  const posts = (await PrismicService.getBlogPosts(1, 5)) as ApiSearchResponse
 
   const workExperience = await PrismicService.getWorkExperience()
   const education = await PrismicService.getEducation()

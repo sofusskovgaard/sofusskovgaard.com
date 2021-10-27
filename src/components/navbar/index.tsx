@@ -14,17 +14,38 @@ const Navbar = observer(() => {
       <ul className="flex gap-2 py-2 my-10 justify-center">
         <li>
           <Link href="/">
-            <a className={cx("px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200", router.pathname == "/" && "bg-white shadow-xl")}>Home</a>
+            <a
+              className={cx(
+                'px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200',
+                router.pathname == '/' && 'bg-white shadow-xl',
+              )}
+            >
+              Home
+            </a>
           </Link>
         </li>
         <li>
           <Link href="/blog">
-            <a className={cx("px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200", router.pathname == "/blog" && "bg-white shadow-xl")}>Blog</a>
+            <a
+              className={cx(
+                'px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200',
+                router.pathname == '/blog' && 'bg-white shadow-xl',
+              )}
+            >
+              Blog
+            </a>
           </Link>
         </li>
         <li>
           <Link href="/contact">
-            <a className={cx("px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200", router.pathname == "/contact" && "bg-white shadow-xl")}>Contact</a>
+            <a
+              className={cx(
+                'px-4 py-2 hover:bg-white hover:shadow-xl rounded transition-shadow transition-color duration-200',
+                router.pathname == '/contact' && 'bg-white shadow-xl',
+              )}
+            >
+              Contact
+            </a>
           </Link>
         </li>
       </ul>

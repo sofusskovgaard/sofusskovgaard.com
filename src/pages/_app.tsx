@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
-import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import getConfig from 'next/config'
+import { useRouter } from 'next/router'
+import { AppProps } from 'next/dist/shared/lib/router/router'
 
 import { StoreProvider } from 'utils/stores'
 
@@ -14,14 +15,14 @@ import '@fortawesome/fontawesome-free/css/solid.min.css'
 import '@fortawesome/fontawesome-free/css/brands.min.css'
 
 import 'styles/core.scss'
-import { useRouter } from 'next/router'
 
-function MyApp({ Component, pageProps }: { Component: NextPage; pageProps: any }) {
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const router = useRouter()
 
   useEffect(() => {
     const { serverRuntimeConfig } = getConfig()
     const handleRouteChange = (url) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(window as any).gtag('config', serverRuntimeConfig.GOOGLE_ANALYTICS_KEY, {
         page_path: url,
       })

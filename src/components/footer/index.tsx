@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 
 const Container = dynamic(() => import('components/container'))
 
-const Footer = () => {
+const Footer = (): JSX.Element => {
   return (
     <footer>
       <Container className="mt-10 mb-6">
@@ -23,32 +23,44 @@ const Footer = () => {
               <a
                 href="https://www.linkedin.com/in/sofusskovgaard/"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="hover:text-black"
               >
                 <i className="fab fa-linkedin fa-fw fa-lg"></i>
-                {/* <Linkedin size={20} /> */}
                 <span className="sr-only">Linkedin</span>
               </a>
             </li>
             <li>
-              <a href="https://github.com/sofusskovgaard" target="_blank" rel="noopener" className="hover:text-black">
+              <a
+                href="https://github.com/sofusskovgaard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black"
+              >
                 <i className="fab fa-github fa-fw fa-lg"></i>
-                {/* <GitHub size={20} /> */}
                 <span className="sr-only">Github</span>
               </a>
             </li>
             <li>
-              <a href="https://gitlab.com/sofusskovgaard" target="_blank" rel="noopener" className="hover:text-black">
+              <a
+                href="https://gitlab.com/sofusskovgaard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black"
+              >
                 <i className="fab fa-gitlab fa-fw fa-lg"></i>
                 {/* <GitHub size={20} /> */}
                 <span className="sr-only">Gitlab</span>
               </a>
             </li>
             <li>
-              <a href="https://twitter.com/sofusskovgaard" target="_blank" rel="noopener" className="hover:text-black">
+              <a
+                href="https://twitter.com/sofusskovgaard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black"
+              >
                 <i className="fab fa-twitter fa-fw fa-lg"></i>
-                {/* <Twitter size={20} /> */}
                 <span className="sr-only">Twitter</span>
               </a>
             </li>
@@ -56,11 +68,10 @@ const Footer = () => {
               <a
                 href="https://untappd.com/user/sofus_skovgaard"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="hover:text-black"
               >
                 <i className="fab fa-untappd fa-fw fa-lg"></i>
-                {/* <Twitter size={20} /> */}
                 <span className="sr-only">Untapped</span>
               </a>
             </li>

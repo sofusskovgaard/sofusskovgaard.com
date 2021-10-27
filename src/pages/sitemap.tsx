@@ -15,7 +15,7 @@ import { useStores } from 'utils/stores'
 // components
 const Container = dynamic(() => import('components/container'))
 
-const Sitemap = observer(({ posts }: { posts: any[] }) => {
+const Sitemap = observer(({ posts }: Props) => {
   const stores = useStores()
   return (
     <Container>
