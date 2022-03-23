@@ -2,7 +2,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
-import { GetServerSidePropsResult, GetStaticPropsResult } from 'next'
+import { GetStaticPropsResult } from 'next'
 
 import PrismicService from 'services/prismic-service'
 import { useStores } from 'utils/stores'
@@ -21,7 +21,10 @@ const Blog = observer(({ posts }: Props) => {
       <Head>
         <title>Blog &mdash; {stores.uiStore.app_name}</title>
         <meta name="keywords" content="sofus,skovgaard,blog,react,csharp,dotnet,javascript,js,typescript,ts" />
-        <meta name="description" content="This is my blog where i write about different topics, mostly software development and design related." />
+        <meta
+          name="description"
+          content="This is my blog where i write about different topics, mostly software development and design related."
+        />
       </Head>
 
       <div className="flex flex-col gap-4">

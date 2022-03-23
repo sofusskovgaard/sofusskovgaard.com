@@ -13,13 +13,13 @@ import nameof from 'utils/types/nameof'
 const Container = dynamic(() => import('components/container'))
 
 class ViewState {
-  name: string = ''
-  email: string = ''
-  subject: string = ''
-  message: string = ''
+  name = ''
+  email = ''
+  subject = ''
+  message = ''
 
-  sending: boolean = false
-  success: boolean
+  sending = false
+  success: boolean = null
 
   constructor() {
     makeObservable(this, {
@@ -103,8 +103,8 @@ const Contact = observer(() => {
           </div>
 
           <p>
-            Got an interesting project, some feedback or maybe even an idea? Don't hesitate to hit me up. I'm looking
-            forward to hearing from you.
+            Got an interesting project, some feedback or maybe even an idea? Don&apos;t hesitate to hit me up. I&apos;m
+            looking forward to hearing from you.
           </p>
 
           <a

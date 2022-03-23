@@ -1,11 +1,12 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import React from 'react'
+import Document, { Html, Head, Main, NextScript, DocumentContext, DocumentInitialProps } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
-import getConfig from "next/config"
+import getConfig from 'next/config'
 
 class MyDocument extends Document {
   serverRuntimeConfig = getConfig().serverRuntimeConfig
 
-  static async getInitialProps(ctx) {
+  static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
     const sheet = new ServerStyleSheet()
     const originalRenderPage = ctx.renderPage
 
@@ -30,7 +31,7 @@ class MyDocument extends Document {
     }
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <Html lang="en">
         <Head>
@@ -50,7 +51,10 @@ class MyDocument extends Document {
             rel="stylesheet"
           ></link>
 
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${this.serverRuntimeConfig.GOOGLE_ANALYTICS_KEY}`} />
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${this.serverRuntimeConfig.GOOGLE_ANALYTICS_KEY}`}
+          />
           <script
             dangerouslySetInnerHTML={{
               __html: `

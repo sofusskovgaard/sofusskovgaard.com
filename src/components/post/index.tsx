@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Link from 'next/link'
 import cx from 'classnames'
@@ -42,7 +42,7 @@ function ImagePost({
   return (
     <article className={cx('group relative rounded bg-black max-h-full overflow-hidden', props.className)}>
       <img
-        className={cx("w-full object-cover transition-opacity duration-200 rounded group-hover:opacity-80 opacity-60")}
+        className={cx('w-full object-cover transition-opacity duration-200 rounded group-hover:opacity-80 opacity-60')}
         style={{ filter: 'grayscale(66%)' }}
         src={doc.data.thumbnail.url}
         alt={doc.data.thumbnail.alt}
@@ -65,11 +65,22 @@ function ImagePost({
   )
 }
 
-function Post(props: { doc: Document; className?: string; hideThumbnail?: boolean; isMain?: boolean }) {
-  return !props.hideThumbnail && props.doc.data.thumbnail.url != null ? <ImagePost {...props} /> : <NoImagePost {...props} />
+function Post(props: Props): JSX.Element {
+  return !props.hideThumbnail && props.doc.data.thumbnail.url != null ? (
+    <ImagePost {...props} />
+  ) : (
+    <NoImagePost {...props} />
+  )
 }
 
 export default Post
+
+export type Props = {
+  doc: Document
+  className?: string
+  hideThumbnail?: boolean
+  isMain?: boolean
+}
 
 const LinkWrapper = styled(Link)`
   &::before {

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { Document } from '@prismicio/client/types/documents'
-import { GetStaticPropsResult } from 'next'
+import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { RichText } from 'prismic-reactjs'
 
 import PrismicService from 'services/prismic-service'
@@ -103,8 +103,8 @@ type Props = {
   prevPost: Document | null
 }
 
-export async function getStaticProps({ params }): Promise<GetStaticPropsResult<Props>> {
-  const post = await PrismicService.getBlogPost(params.slug)
+export async function getStaticProps(ctx: GetStaticPropsContext): Promise<GetStaticPropsResult<Props>> {
+  const post = await PrismicService.getBlogPost(ctx.params['slug'] as string)
 
   if (post == null)
     return {
@@ -128,7 +128,7 @@ export async function getStaticProps({ params }): Promise<GetStaticPropsResult<P
   }
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const posts = (await PrismicService.getBlogPosts(null, null)) as Document[]
   return {
     paths: posts.map((post) => ({ params: { slug: post.uid } })),

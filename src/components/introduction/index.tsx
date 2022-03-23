@@ -3,16 +3,16 @@ import { RichText } from 'prismic-reactjs'
 import { Document } from '@prismicio/client/types/documents'
 import styled from 'styled-components'
 
-const Introduction = ({ model }: { model: Document }) => {
+const Introduction = ({ model }: Props): JSX.Element => {
   return (
     <Grid className="gap-10">
       <img
-          alt={model.data.portrait.alt}
-          src={model.data.portrait.url}
-          height={model.data.portrait.dimensions.height}
-          width={model.data.portrait.dimensions.width}
-          className="md:row-span-2 rounded w-full"
-        />
+        alt={model.data.portrait.alt}
+        src={model.data.portrait.url}
+        height={model.data.portrait.dimensions.height}
+        width={model.data.portrait.dimensions.width}
+        className="md:row-span-2 rounded w-full"
+      />
 
       <section className="row-start-1 col-start-1 md:col-start-2">
         <h1 className="font-bold text-3xl">{model.data.title[0].text}</h1>
@@ -27,6 +27,10 @@ const Introduction = ({ model }: { model: Document }) => {
 }
 
 export default Introduction
+
+export type Props = {
+  model: Document
+}
 
 const Grid = styled.div`
   display: grid;
