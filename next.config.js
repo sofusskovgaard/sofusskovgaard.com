@@ -21,8 +21,11 @@ const securityHeaders = [
   },
 ]
 
+/**
+ * @type {import('next').NextConfig}
+ */
 module.exports = {
-  webpackDevMiddleware: (config) => {
+  webpack: (config) => {
     config.watchOptions = {
       poll: 1000,
       aggregateTimeout: 300,
