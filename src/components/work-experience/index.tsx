@@ -22,16 +22,17 @@ function WorkExperience(opts: Props): JSX.Element {
   )
 
   return (
-    <article className="p-4">
+    <article>
       <h5 className="font-semibold text-lg">{opts.job_title}</h5>
-      <a href={opts.company_url} className="text-sm font-medium underline" target="_blank" rel="noopener noreferrer">
+      <a href={opts.company_url} className="text-sm font-medium underline" target="_blank">
         {opts.company}
       </a>
       <small className="block text-gray-600">
         {formatDateWithoutDay(opts.started)} &ndash;{' '}
         {opts.stopped != null ? formatDateWithoutDay(opts.stopped) : 'Present'}
         <span className="mx-1">&middot;</span>
-        {years} yrs {months} mos
+        {years > 0 && <span>{years} yrs</span>}
+        {months > 0 && <span> {months} mos</span>}
       </small>
     </article>
   )

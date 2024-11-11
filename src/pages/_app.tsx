@@ -36,13 +36,13 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <StoreProvider hydrationData={pageProps.hydrationData}>
-      <header>
+      {/* <header>
         <Navbar />
-      </header>
-      <main className="flex-1 flex flex-col">
+      </header> */}
+      <main>
         <Component {...pageProps} />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </StoreProvider>
   )
 }

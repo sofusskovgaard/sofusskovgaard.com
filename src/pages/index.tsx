@@ -1,31 +1,31 @@
-import React from 'react'
-import { observer } from 'mobx-react'
-import Head from 'next/head'
-import dynamic from 'next/dynamic'
+import React from "react";
+import { observer } from "mobx-react";
+import Head from "next/head";
+import dynamic from "next/dynamic";
 
 // data access
-import PrismicService from 'services/prismic-service'
+import PrismicService from "services/prismic-service";
 
 // utils
-import { useStores } from 'utils/stores'
-import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse'
-import { Document } from '@prismicio/client/types/documents'
-import { GetStaticPropsResult } from 'next'
+import { useStores } from "utils/stores";
+import ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
+import { Document } from "@prismicio/client/types/documents";
+import { GetStaticPropsResult } from "next";
 
 // components
-const Post = dynamic(() => import('components/post'))
-const List = dynamic(() => import('components/list'))
-const Container = dynamic(() => import('components/container'))
-const Introduction = dynamic(() => import('components/introduction'))
+const Post = dynamic(() => import("components/post"));
+const List = dynamic(() => import("components/list"));
+const Container = dynamic(() => import("components/container"));
+const Introduction = dynamic(() => import("components/introduction"));
 
-const WorkExperience = dynamic(() => import('components/work-experience'))
-const Education = dynamic(() => import('components/education'))
+const WorkExperience = dynamic(() => import("components/work-experience"));
+const Education = dynamic(() => import("components/education"));
 
 const Home = observer(({ posts, components }: Props) => {
-  const stores = useStores()
+  const stores = useStores();
 
   return (
-    <Container>
+    <Container className="flex flex-col gap-10">
       <Head>
         <title>Welcome &mdash; {stores.uiStore.app_name}</title>
         <meta
@@ -40,8 +40,8 @@ const Home = observer(({ posts, components }: Props) => {
 
       <Introduction model={components.introduction} />
 
-      <div className="flex flex-col md:flex-row gap-4 md:gap-10">
-        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+      <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col flex-1 gap-10">
           {components.workExperience != null && (
             <List
               title="Work experience"
@@ -55,7 +55,10 @@ const Home = observer(({ posts, components }: Props) => {
                   stopped={exp.data.stopped}
                 />
               )}
-              model={components.workExperience.results}
+              model={components.workExperience.results.sort(
+                (a, b) =>
+                  Date.parse(b.data.started) - Date.parse(a.data.started)
+              )}
             />
           )}
 
@@ -76,12 +79,14 @@ const Home = observer(({ posts, components }: Props) => {
           )}
         </div>
 
-        <div className="flex flex-col flex-1 gap-4 md:gap-10">
+        <div className="flex flex-col flex-1 gap-10">
           {posts != null && (
             <List
               title="Latest posts"
-              link={{ href: '/blog', text: 'All posts' }}
-              render={(post: Document) => <Post key={post.id} doc={post} hideThumbnail />}
+              link={{ href: "/blog", text: "All posts" }}
+              render={(post: Document) => (
+                <Post key={post.id} doc={post} hideThumbnail />
+              )}
               model={posts.results}
               emptyText="There are no posts"
             />
@@ -89,24 +94,24 @@ const Home = observer(({ posts, components }: Props) => {
         </div>
       </div>
     </Container>
-  )
-})
+  );
+});
 
 type Props = {
-  posts: ApiSearchResponse
+  posts: ApiSearchResponse;
   components: {
-    workExperience: ApiSearchResponse
-    education: ApiSearchResponse
-    introduction: Document
-  }
-}
+    workExperience: ApiSearchResponse;
+    education: ApiSearchResponse;
+    introduction: Document;
+  };
+};
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
-  const posts = (await PrismicService.getBlogPosts(1, 5)) as ApiSearchResponse
+  const posts = (await PrismicService.getBlogPosts(1, 5)) as ApiSearchResponse;
 
-  const workExperience = await PrismicService.getWorkExperience()
-  const education = await PrismicService.getEducation()
-  const introduction = await PrismicService.getIntroduction()
+  const workExperience = await PrismicService.getWorkExperience();
+  const education = await PrismicService.getEducation();
+  const introduction = await PrismicService.getIntroduction();
 
   return {
     props: {
@@ -118,7 +123,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
       },
     },
     revalidate: 60,
-  }
+  };
 }
 
-export default Home
+export default Home;

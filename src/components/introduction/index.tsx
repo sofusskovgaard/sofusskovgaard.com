@@ -1,36 +1,48 @@
-import React from 'react'
-import { RichText } from 'prismic-reactjs'
-import { Document } from '@prismicio/client/types/documents'
-import styled from 'styled-components'
+import React from "react";
+import { RichText } from "prismic-reactjs";
+import { Document } from "@prismicio/client/types/documents";
+import styled from "styled-components";
 
 const Introduction = ({ model }: Props): JSX.Element => {
   return (
-    <Grid className="gap-10">
+    <div className="flex flex-col sm:block lg:grid lg:grid-cols-2 gap-10 w-full">
       <img
         alt={model.data.portrait.alt}
         src={model.data.portrait.url}
         height={model.data.portrait.dimensions.height}
         width={model.data.portrait.dimensions.width}
-        className="md:row-span-2 rounded w-full"
+        className="hidden lg:block rounded"
       />
 
-      <section className="row-start-1 col-start-1 md:col-start-2">
-        <h1 className="font-bold text-3xl">{model.data.title[0].text}</h1>
-        <h3 className="font-mono font-medium uppercase text-gray-500">{model.data.subtitle[0].text}</h3>
-      </section>
+      <div className="lg:flex flex-col gap-5">
+        <img
+          alt={model.data.portrait.alt}
+          src={model.data.portrait.url}
+          height={model.data.portrait.dimensions.height}
+          width={model.data.portrait.dimensions.width}
+          className="block lg:hidden rounded w-full sm:w-1/2 sm:float-left sm:mr-5 mb-5"
+        />
 
-      <section className="prose w-full row-start-3 md:row-start-2 md:col-start-2">
-        {RichText.render(model.data.introduction)}
-      </section>
-    </Grid>
-  )
-}
+        <div className="mb-5 lg:mb-0">
+          <h1 className="font-bold text-3xl whitespace-nowrap">{model.data.title[0].text}</h1>
+          <h3 className="font-mono font-medium uppercase whitespace-nowrap text-gray-500">
+            {model.data.subtitle[0].text}
+          </h3>
+        </div>
 
-export default Introduction
+        <div className="min-w-full prose text-justify">
+          {RichText.render(model.data.introduction)}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Introduction;
 
 export type Props = {
-  model: Document
-}
+  model: Document;
+};
 
 const Grid = styled.div`
   display: grid;
@@ -42,4 +54,4 @@ const Grid = styled.div`
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
   }
-`
+`;

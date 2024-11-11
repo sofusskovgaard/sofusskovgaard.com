@@ -19,14 +19,15 @@ const Education = (opts: Props): JSX.Element => {
   )
 
   return (
-    <article className="p-4">
+    <article>
       <h5 className="font-semibold text-lg">{opts.subject}</h5>
       <span className="text-sm font-medium underline">{opts.school}</span>
       <small className="block text-gray-600">
         {formatDateWithoutDay(opts.started)} &ndash;{' '}
         {opts.stopped != null ? formatDateWithoutDay(opts.stopped) : 'Present'}
         <span className="mx-1">&middot;</span>
-        {years} yrs {months} mos
+        {years > 0 && <span>{years} yrs</span>}
+        {months > 0 && <span> {months} mos</span>}
       </small>
     </article>
   )
