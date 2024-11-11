@@ -1,7 +1,6 @@
 import React from "react";
 import { RichText } from "prismic-reactjs";
 import { Document } from "@prismicio/client/types/documents";
-import styled from "styled-components";
 
 const Introduction = ({ model }: Props): JSX.Element => {
   return (
@@ -43,15 +42,3 @@ export default Introduction;
 export type Props = {
   model: Document;
 };
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
-
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
-    gap: 1rem;
-  }
-`;

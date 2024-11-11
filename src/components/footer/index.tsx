@@ -14,8 +14,8 @@ const Footer = (): JSX.Element => {
           </div>
           <div className="my-auto mr-auto md:mr-0">
             <span className="mr-2">/</span>
-            <Link href="/sitemap">
-              <a className="p-1">sitemap</a>
+            <Link className="p-1" href="/sitemap">
+              sitemap
             </Link>
           </div>
           <ul className="flex items-center justify-center md:justify-start text-gray-600 gap-2 text-sm w-full md:w-auto ml-auto order-first md:order-none">

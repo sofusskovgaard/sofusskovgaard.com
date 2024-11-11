@@ -27,7 +27,7 @@ const Home = observer(({ posts, components }: Props) => {
   return (
     <Container className="flex flex-col gap-10">
       <Head>
-        <title>Welcome &mdash; {stores.uiStore.app_name}</title>
+        <title>Welcome — {stores.uiStore.app_name}</title>
         <meta
           name="keywords"
           content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts"
@@ -45,7 +45,7 @@ const Home = observer(({ posts, components }: Props) => {
           {components.workExperience != null && (
             <List
               title="Work experience"
-              render={(exp: Document) => (
+              render={(exp: any) => (
                 <WorkExperience
                   key={exp.id}
                   job_title={exp.data.job_title}
@@ -65,7 +65,7 @@ const Home = observer(({ posts, components }: Props) => {
           {components.education != null && (
             <List
               title="Education"
-              render={(edu: Document) => (
+              render={(edu: any) => (
                 <Education
                   key={edu.id}
                   subject={edu.data.subject}
@@ -84,7 +84,7 @@ const Home = observer(({ posts, components }: Props) => {
             <List
               title="Latest posts"
               link={{ href: "/blog", text: "All posts" }}
-              render={(post: Document) => (
+              render={(post: any) => (
                 <Post key={post.id} doc={post} hideThumbnail />
               )}
               model={posts.results}

@@ -1,25 +1,25 @@
-import React, { useState } from 'react'
-import { observer } from 'mobx-react'
-import { action, computed, makeObservable, observable } from 'mobx'
-import Head from 'next/head'
-import dynamic from 'next/dynamic'
-import cx from 'classnames'
+import React, { useState } from "react";
+import { observer } from "mobx-react";
+import { action, computed, makeObservable, observable } from "mobx";
+import Head from "next/head";
+import dynamic from "next/dynamic";
+import cx from "classnames";
 
 // utils
-import { useStores } from 'utils/stores'
-import nameof from 'utils/types/nameof'
+import { useStores } from "utils/stores";
+import nameof from "utils/types/nameof";
 
 // components
-const Container = dynamic(() => import('components/container'))
+const Container = dynamic(() => import("components/container"));
 
 class ViewState {
-  name = ''
-  email = ''
-  subject = ''
-  message = ''
+  name = "";
+  email = "";
+  subject = "";
+  message = "";
 
-  sending = false
-  success: boolean = null
+  sending = false;
+  success: boolean | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -35,7 +35,7 @@ class ViewState {
       form: computed,
       resetForm: action,
       submit: action,
-    })
+    });
   }
 
   get disabled() {
@@ -46,7 +46,7 @@ class ViewState {
       this.message.length == 0 ||
       this.success != null ||
       this.sending
-    )
+    );
   }
 
   get form() {
@@ -55,43 +55,39 @@ class ViewState {
       email: this.email,
       subject: this.subject,
       message: this.message,
-    }
+    };
   }
 
   resetForm() {
-    this.name = ''
-    this.email = ''
-    this.subject = ''
-    this.message = ''
-  }
-
-  change(prop, value) {
-    this[prop] = value
+    this.name = "";
+    this.email = "";
+    this.subject = "";
+    this.message = "";
   }
 
   async submit() {
-    this.sending = true
+    this.sending = true;
 
-    const response = await fetch('/api/contact', {
-      method: 'POST',
+    const response = await fetch("/api/contact", {
+      method: "POST",
       body: JSON.stringify(this.form),
-    })
+    });
 
-    const json = await response.json()
-    this.success = json.success
+    const json = await response.json();
+    this.success = json.success;
 
-    this.sending = false
+    this.sending = false;
   }
 }
 
 const Contact = observer(() => {
-  const stores = useStores()
-  const [viewState] = useState(new ViewState())
+  const stores = useStores();
+  const [viewState] = useState(new ViewState());
 
   return (
     <Container>
       <Head>
-        <title>Contact &mdash; {stores.uiStore.app_name}</title>
+        <title>Contact — {stores.uiStore.app_name}</title>
         <meta name="robots" content="noindex" />
       </Head>
 
@@ -103,8 +99,9 @@ const Contact = observer(() => {
           </div>
 
           <p>
-            Got an interesting project, some feedback or maybe even an idea? Don&apos;t hesitate to hit me up. I&apos;m
-            looking forward to hearing from you.
+            Got an interesting project, some feedback or maybe even an idea?
+            Don&apos;t hesitate to hit me up. I&apos;m looking forward to
+            hearing from you.
           </p>
 
           <a
@@ -119,7 +116,7 @@ const Contact = observer(() => {
             <label className="block font-medium mb-1">Name</label>
             <input
               value={viewState.name}
-              onChange={(e) => viewState.change(nameof<ViewState>('name'), e.target.value)}
+              onChange={(e) => (viewState.name = e.target.value)}
               type="text"
               name="name"
               className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
@@ -131,7 +128,7 @@ const Contact = observer(() => {
             <label className="block font-medium mb-1">Email</label>
             <input
               value={viewState.email}
-              onChange={(e) => viewState.change(nameof<ViewState>('email'), e.target.value)}
+              onChange={(e) => (viewState.email = e.target.value)}
               type="email"
               name="email"
               className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
@@ -143,7 +140,7 @@ const Contact = observer(() => {
             <label className="block font-medium mb-1">Subject</label>
             <input
               value={viewState.subject}
-              onChange={(e) => viewState.change(nameof<ViewState>('subject'), e.target.value)}
+              onChange={(e) => (viewState.subject = e.target.value)}
               type="text"
               name="subject"
               className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
@@ -155,7 +152,7 @@ const Contact = observer(() => {
             <label className="block font-medium mb-1">Message</label>
             <textarea
               value={viewState.message}
-              onChange={(e) => viewState.change(nameof<ViewState>('message'), e.target.value)}
+              onChange={(e) => (viewState.message = e.target.value)}
               name="message"
               className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
               rows={9}
@@ -166,21 +163,22 @@ const Contact = observer(() => {
           <button
             onClick={viewState.submit.bind(viewState)}
             className={cx(
-              'col-span-2 px-4 py-2 font-medium rounded bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200',
-              viewState.disabled && 'cursor-default bg-black text-white !shadow-none',
+              "col-span-2 px-4 py-2 font-medium rounded bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200",
+              viewState.disabled &&
+                "cursor-default bg-black text-white !shadow-none"
             )}
             disabled={viewState.disabled}
           >
             {viewState.success != null
               ? viewState.success
-                ? 'Message sent successfully.'
-                : 'An error occured, sorry.'
-              : 'Send message'}
+                ? "Message sent successfully."
+                : "An error occured, sorry."
+              : "Send message"}
           </button>
         </section>
       </div>
     </Container>
-  )
-})
+  );
+});
 
-export default Contact
+export default Contact;

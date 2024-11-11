@@ -15,7 +15,7 @@ const Container = ({
 };
 
 export type Props = {
-  className?: string;
+  className?: string | null;
 };
 
 export default Container;

@@ -1,37 +1,11 @@
-import React from 'react'
-import Document, { Html, Head, Main, NextScript, DocumentContext, DocumentInitialProps } from 'next/document'
-import { ServerStyleSheet } from 'styled-components'
-import getConfig from 'next/config'
+import React from "react";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import getConfig from "next/config";
 
 class MyDocument extends Document {
-  serverRuntimeConfig = getConfig().serverRuntimeConfig
+  serverRuntimeConfig = getConfig().serverRuntimeConfig;
 
-  static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
-    const sheet = new ServerStyleSheet()
-    const originalRenderPage = ctx.renderPage
-
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
-        })
-
-      const initialProps = await Document.getInitialProps(ctx)
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
-      }
-    } finally {
-      sheet.seal()
-    }
-  }
-
-  render(): JSX.Element {
+  render() {
     return (
       <Html lang="en">
         <Head>
@@ -74,8 +48,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default MyDocument
+export default MyDocument;
