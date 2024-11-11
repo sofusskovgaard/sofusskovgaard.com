@@ -109,9 +109,9 @@ const Contact = observer(() => {
 
           <a
             className="font-medium underline active:text-decoration-style-dotted hover:text-decoration-style-dotted focus:text-decoration-style-dotted"
-            href="mailto:hello@sofusskovgaard.com"
+            href="mailto:hello@skovgaard.io"
           >
-            hello@sofusskovgaard.com
+            hello@skovgaard.io
           </a>
         </section>
         <section className="flex-1 grid grid-cols-2 gap-4">

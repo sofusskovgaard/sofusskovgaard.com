@@ -45,8 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const client = new ServerClient(serverRuntimeConfig.POSTMARK_APIKEY)
 
       await client.sendEmailWithTemplate({
-        From: 'no-reply@sofusskovgaard.com',
-        To: 'hello@sofusskovgaard.com',
+        From: 'no-reply@skovgaard.io',
+        To: 'hello@skovgaard.io',
         TemplateId: 25231452,
         TemplateModel: model,
       })
