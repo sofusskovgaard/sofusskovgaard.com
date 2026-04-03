@@ -23,7 +23,7 @@ Personal portfolio website for **Sofus Skovgaard**. It showcases work experience
 | **Google Analytics**  | `gtag`                                       | Analytics — injected server-side in `_document.tsx`                      |
 | **Font Awesome Free** | 5                                            | Icon library                                                             |
 | **date-fns**          | 2                                            | Date formatting utilities                                                |
-| **pnpm**              | 9.12.3                                       | Package manager                                                          |
+| **pnpm**              | 10.33.0                                      | Package manager                                                          |
 | **classnames**        | —                                            | Conditional class name composition (aliased as `cx` by convention)       |
 | **ESLint**            | 9 (flat config)                              | Linting — `eslint.config.mjs` with `next/typescript` + `prettier` rules  |
 | **Prettier**          | 3                                            | Code formatting — config in `.prettierrc`                                |

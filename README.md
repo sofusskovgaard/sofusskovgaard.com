@@ -6,8 +6,8 @@ Personal portfolio website for Sofus Skovgaard. Showcases work experience, educa
 
 ## Prerequisites
 
-- **Node.js** 22+
-- **pnpm** 9+
+- **Node.js** 24+
+- **pnpm** 10+
 
 ---
 
