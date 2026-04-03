@@ -87,7 +87,7 @@ const BlogPost = ({ post, latestPosts, nextPost, prevPost }: Props): JSX.Element
         {/* <hr className="mt-4 mb-6 md:my-10" /> */}
         {post.data.thumbnail.url != null && (
           <img
-            className="w-full rounded"
+            className="w-full rounded-sm"
             src={post.data.thumbnail.url}
             alt={post.data.thumbnail.alt}
           />

@@ -72,7 +72,7 @@ const Contact = () => {
               onChange={(e) => setName(e.target.value)}
               type="text"
               name="name"
-              className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
+              className="focus:outline-hidden focus:ring-3 focus:ring-gray-100 p-4 w-full rounded-sm text-sm"
               placeholder="John Doe"
               readOnly={success != null}
             />
@@ -84,7 +84,7 @@ const Contact = () => {
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               name="email"
-              className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
+              className="focus:outline-hidden focus:ring-3 focus:ring-gray-100 p-4 w-full rounded-sm text-sm"
               placeholder="john.doe@mail.com"
               readOnly={success != null}
             />
@@ -96,7 +96,7 @@ const Contact = () => {
               onChange={(e) => setSubject(e.target.value)}
               type="text"
               name="subject"
-              className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
+              className="focus:outline-hidden focus:ring-3 focus:ring-gray-100 p-4 w-full rounded-sm text-sm"
               placeholder="Message of the utmost importance"
               readOnly={success != null}
             />
@@ -107,7 +107,7 @@ const Contact = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               name="message"
-              className="focus:outline-none focus:ring focus:ring-gray-100 p-4 w-full rounded text-sm"
+              className="focus:outline-hidden focus:ring-3 focus:ring-gray-100 p-4 w-full rounded-sm text-sm"
               rows={9}
               placeholder="Hello there."
               readOnly={success != null}
@@ -116,7 +116,7 @@ const Contact = () => {
           <button
             onClick={submit}
             className={cx(
-              "col-span-2 px-4 py-2 font-medium rounded bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200",
+              "col-span-2 px-4 py-2 font-medium rounded-sm bg-gray-100 hover:bg-black focus:bg-black text-black hover:text-white focus:text-white hover:shadow-xl transition-color duration-200",
               disabled && "cursor-default bg-black text-white !shadow-none"
             )}
             disabled={disabled}

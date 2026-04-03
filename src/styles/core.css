@@ -1,23 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-@layer utilities {
-  .text-decoration-style-solid {
-    text-decoration-style: solid;
-  }
-  .text-decoration-style-double {
-    text-decoration-style: double;
-  }
-  .text-decoration-style-dotted {
-    text-decoration-style: dotted;
-  }
-  .text-decoration-style-dashed {
-    text-decoration-style: dashed;
-  }
-  .text-decoration-style-wavy {
-    text-decoration-style: wavy;
-  }
+@theme {
+  --font-sans: -apple-system, Inter, "Segoe UI";
+  --font-mono: ui-monospace, "Roboto Mono", monospace;
+  --breakpoint-xxs: 384px;
+  --breakpoint-xs: 512px;
+}
+
+@utility text-decoration-style-solid {
+  text-decoration-style: solid;
+}
+
+@utility text-decoration-style-double {
+  text-decoration-style: double;
+}
+
+@utility text-decoration-style-dotted {
+  text-decoration-style: dotted;
+}
+
+@utility text-decoration-style-dashed {
+  text-decoration-style: dashed;
+}
+
+@utility text-decoration-style-wavy {
+  text-decoration-style: wavy;
 }
 
 html {

@@ -10,7 +10,7 @@ const Introduction = ({ model }: Props): JSX.Element => {
         src={model.data.portrait.url}
         height={model.data.portrait.dimensions.height}
         width={model.data.portrait.dimensions.width}
-        className="hidden lg:block rounded"
+        className="hidden lg:block rounded-sm"
       />
 
       <div className="lg:flex flex-col gap-5">
@@ -19,7 +19,7 @@ const Introduction = ({ model }: Props): JSX.Element => {
           src={model.data.portrait.url}
           height={model.data.portrait.dimensions.height}
           width={model.data.portrait.dimensions.width}
-          className="block lg:hidden rounded w-full sm:w-1/2 sm:float-left sm:mr-5 mb-5"
+          className="block lg:hidden rounded-sm w-full sm:w-1/2 sm:float-left sm:mr-5 mb-5"
         />
 
         <div className="mb-5 lg:mb-0">

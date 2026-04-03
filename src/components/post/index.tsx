@@ -16,7 +16,7 @@ function NoImagePost({
   return (
     <article
       className={cx(
-        "h-full flex flex-col group relative p-4 transition-shadow transition-color duration-200 rounded hover:shadow-xl focus-within:shadow-xl hover:bg-white focus-within:bg-white",
+        "h-full flex flex-col group relative p-4 transition-shadow transition-color duration-200 rounded-sm hover:shadow-xl focus-within:shadow-xl hover:bg-white focus-within:bg-white",
         props.className
       )}
     >
@@ -47,17 +47,20 @@ function ImagePost({
 }) {
   return (
     <article
-      className={cx("group relative rounded bg-black max-h-full overflow-hidden", props.className)}
+      className={cx(
+        "group relative rounded-sm bg-black max-h-full overflow-hidden",
+        props.className
+      )}
     >
       <img
         className={cx(
-          "w-full object-cover transition-opacity duration-200 rounded group-hover:opacity-80 opacity-60"
+          "w-full object-cover transition-opacity duration-200 rounded-sm group-hover:opacity-80 opacity-60"
         )}
         style={{ filter: "grayscale(66%)" }}
         src={doc.data.thumbnail.url}
         alt={doc.data.thumbnail.alt}
       />
-      <div className="flex flex-col p-4 absolute top-0 bottom-0 left-0 right-0 transition-all duration-200 group-hover:backdrop-blur-sm backdrop-blur-0">
+      <div className="flex flex-col p-4 absolute top-0 bottom-0 left-0 right-0 transition-all duration-200 group-hover:backdrop-blur-xs backdrop-blur-0">
         <h5 className="font-semibold text-lg text-white">
           <Link
             className="underline decoration-2 group-hover:text-decoration-style-dotted focus:text-decoration-style-dotted"
