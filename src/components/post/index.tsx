@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import cx from "classnames";
-import { Document } from "@prismicio/client/types/documents";
+import type { Document } from "@prismicio/client/types/documents";
 
 import { formatDate } from "utils/date-format";
 
@@ -47,10 +47,7 @@ function ImagePost({
 }) {
   return (
     <article
-      className={cx(
-        "group relative rounded bg-black max-h-full overflow-hidden",
-        props.className
-      )}
+      className={cx("group relative rounded bg-black max-h-full overflow-hidden", props.className)}
     >
       <img
         className={cx(

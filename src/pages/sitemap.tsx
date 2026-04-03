@@ -1,26 +1,24 @@
 import React from "react";
-import { observer } from "mobx-react";
 import Link from "next/link";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import { Document } from "@prismicio/client/types/documents";
-import { GetStaticPropsResult } from "next";
+import type { Document } from "@prismicio/client/types/documents";
+import type { GetStaticPropsResult } from "next";
 
 // data access
 import PrismicService from "services/prismic-service";
 
 // utils
-import { useStores } from "utils/stores";
+import { APP_NAME } from "utils/constants";
 
 // components
 const Container = dynamic(() => import("components/container"));
 
-const Sitemap = observer(({ posts }: Props) => {
-  const stores = useStores();
+const Sitemap = ({ posts }: Props): JSX.Element => {
   return (
     <Container>
       <Head>
-        <title>Sitemap — {stores.uiStore.app_name}</title>
+        <title>{`Sitemap — ${APP_NAME}`}</title>
         <meta name="robots" content="noindex" />
       </Head>
 
@@ -35,9 +33,7 @@ const Sitemap = observer(({ posts }: Props) => {
               {posts.map((post) => {
                 return (
                   <li key={post.uid}>
-                    <Link href={`/blog/${post.uid}`}>
-                      {post.data.title[0].text}
-                    </Link>
+                    <Link href={`/blog/${post.uid}`}>{post.data.title[0].text}</Link>
                   </li>
                 );
               })}
@@ -45,14 +41,12 @@ const Sitemap = observer(({ posts }: Props) => {
           )}
         </li>
         <li>
-          <Link href="/contact">
-            Contact
-          </Link>
+          <Link href="/contact">Contact</Link>
         </li>
       </ul>
     </Container>
   );
-});
+};
 
 type Props = {
   posts: Document[];

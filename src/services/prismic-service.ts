@@ -1,53 +1,12 @@
-import { action, makeObservable, observable, when } from "mobx";
-import getConfig from "next/config";
-
 import Prismic from "@prismicio/client";
-import { Document } from "@prismicio/client/types/documents";
-import ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
-import { QueryOptions } from "@prismicio/client/types/ResolvedApi";
+import type { Document } from "@prismicio/client/types/documents";
+import type ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
+import type { QueryOptions } from "@prismicio/client/types/ResolvedApi";
 
 class PrismicService {
-  serverRuntimeConfig = getConfig().serverRuntimeConfig;
-
-  blog_posts: Document[] = [];
-
-  loading = false;
-  loaded = false;
-
-  constructor() {
-    makeObservable(this, {
-      blog_posts: observable,
-      loading: observable,
-      loaded: observable,
-
-      getAllBlogPosts: action,
-      getLatestBlogPosts: action,
-      getBlogPosts: action,
-      getBlogPost: action,
-    });
-
-    this.getAllBlogPosts();
-  }
-
   //#region Blog posts
 
-  async getAllBlogPosts(): Promise<void> {
-    this.loading = true;
-
-    const results = await this._getAllOfType(
-      Prismic.Predicates.at("document.type", "blog_post")
-    );
-
-    results.forEach((item) => this.blog_posts.push(item));
-
-    this.loading = false;
-    this.loaded = true;
-  }
-
-  async getLatestBlogPosts(
-    id: string,
-    pageSize: number = 3
-  ): Promise<Document[]> {
+  async getLatestBlogPosts(id: string, pageSize: number = 3): Promise<Document[]> {
     const response = await this._getManyOfType(
       Prismic.Predicates.at("document.type", "blog_post"),
       undefined,
@@ -165,13 +124,10 @@ class PrismicService {
   //#endregion
 
   private _createAPIClient() {
-    return Prismic.client(this.serverRuntimeConfig.PRISMIC_URL + "/api/v2");
+    return Prismic.client(process.env.PRISMIC_URL + "/api/v2");
   }
 
-  private async _getOneOfType(
-    query: string | string[],
-    options?: QueryOptions
-  ) {
+  private async _getOneOfType(query: string | string[], options?: QueryOptions) {
     const client = this._createAPIClient();
     const response = await client.queryFirst(query, options);
     return response;
@@ -200,12 +156,7 @@ class PrismicService {
     response.results.forEach((result) => results.push(result));
 
     while (response.total_pages > response.page) {
-      response = await this._getManyOfType(
-        query,
-        undefined,
-        response.page + 1,
-        100
-      );
+      response = await this._getManyOfType(query, undefined, response.page + 1, 100);
       response.results.forEach((result) => results.push(result));
     }
 

@@ -1,10 +1,7 @@
 import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import getConfig from "next/config";
 
 class MyDocument extends Document {
-  serverRuntimeConfig = getConfig().serverRuntimeConfig;
-
   render() {
     return (
       <Html lang="en">
@@ -27,7 +24,7 @@ class MyDocument extends Document {
 
           <script
             async
-            src={`https://www.googletagmanager.com/gtag/js?id=${this.serverRuntimeConfig.GOOGLE_ANALYTICS_KEY}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY}`}
           />
           <script
             dangerouslySetInnerHTML={{
@@ -35,7 +32,7 @@ class MyDocument extends Document {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${this.serverRuntimeConfig.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
+            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_KEY}', {
               page_path: window.location.pathname,
             });
           `,

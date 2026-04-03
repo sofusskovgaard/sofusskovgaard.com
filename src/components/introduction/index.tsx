@@ -1,6 +1,6 @@
 import React from "react";
 import { RichText } from "prismic-reactjs";
-import { Document } from "@prismicio/client/types/documents";
+import type { Document } from "@prismicio/client/types/documents";
 
 const Introduction = ({ model }: Props): JSX.Element => {
   return (

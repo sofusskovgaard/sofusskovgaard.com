@@ -1,5 +1,4 @@
 import React from "react";
-import { observer } from "mobx-react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 
@@ -7,10 +6,10 @@ import dynamic from "next/dynamic";
 import PrismicService from "services/prismic-service";
 
 // utils
-import { useStores } from "utils/stores";
-import ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
-import { Document } from "@prismicio/client/types/documents";
-import { GetStaticPropsResult } from "next";
+import { APP_NAME } from "utils/constants";
+import type ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
+import type { Document } from "@prismicio/client/types/documents";
+import type { GetStaticPropsResult } from "next";
 
 // components
 const Post = dynamic(() => import("components/post"));
@@ -21,13 +20,11 @@ const Introduction = dynamic(() => import("components/introduction"));
 const WorkExperience = dynamic(() => import("components/work-experience"));
 const Education = dynamic(() => import("components/education"));
 
-const Home = observer(({ posts, components }: Props) => {
-  const stores = useStores();
-
+const Home = ({ posts, components }: Props): JSX.Element => {
   return (
     <Container className="flex flex-col gap-10">
       <Head>
-        <title>Welcome — {stores.uiStore.app_name}</title>
+        <title>{`Welcome — ${APP_NAME}`}</title>
         <meta
           name="keywords"
           content="sofus,skovgaard,software,developer,designer,react,csharp,dotnet,javascript,js,typescript,ts"
@@ -56,8 +53,7 @@ const Home = observer(({ posts, components }: Props) => {
                 />
               )}
               model={components.workExperience.results.sort(
-                (a, b) =>
-                  Date.parse(b.data.started) - Date.parse(a.data.started)
+                (a, b) => Date.parse(b.data.started) - Date.parse(a.data.started)
               )}
             />
           )}
@@ -84,9 +80,7 @@ const Home = observer(({ posts, components }: Props) => {
             <List
               title="Latest posts"
               link={{ href: "/blog", text: "All posts" }}
-              render={(post: any) => (
-                <Post key={post.id} doc={post} hideThumbnail />
-              )}
+              render={(post: any) => <Post key={post.id} doc={post} hideThumbnail />}
               model={posts.results}
               emptyText="There are no posts"
             />
@@ -95,7 +89,7 @@ const Home = observer(({ posts, components }: Props) => {
       </div>
     </Container>
   );
-});
+};
 
 type Props = {
   posts: ApiSearchResponse;

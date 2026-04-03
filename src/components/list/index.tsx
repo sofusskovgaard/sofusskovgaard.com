@@ -1,4 +1,5 @@
-import React, { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
+import React from "react";
 import Link from "next/link";
 import cx from "classnames";
 
@@ -14,9 +15,7 @@ export type ListType<Model> = {
   emptyText?: string;
 };
 
-const List = <Model extends unknown>(
-  opts: PropsWithChildren<ListType<Model>>
-): JSX.Element => (
+const List = <Model,>(opts: PropsWithChildren<ListType<Model>>): JSX.Element => (
   <section className={cx(opts.className && opts.className)}>
     <div className="flex items-center justify-center mb-4">
       <h4 className="font-medium inline">{opts.title}</h4>

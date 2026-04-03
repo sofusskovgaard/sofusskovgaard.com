@@ -1,12 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
-    config.watchOptions = {
-      poll: 1000,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
   headers() {
     return [
       {
@@ -35,11 +28,6 @@ const nextConfig = {
         ],
       },
     ];
-  },
-  serverRuntimeConfig: {
-    PRISMIC_URL: process.env.PRISMIC_URL,
-    POSTMARK_APIKEY: process.env.POSTMARK_APIKEY,
-    GOOGLE_ANALYTICS_KEY: process.env.GOOGLE_ANALYTICS_KEY,
   },
 };
 

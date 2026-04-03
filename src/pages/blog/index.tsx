@@ -1,24 +1,21 @@
 import React from "react";
-import { observer } from "mobx-react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import { GetStaticPropsResult } from "next";
+import type { GetStaticPropsResult } from "next";
 
 import PrismicService from "services/prismic-service";
-import { useStores } from "utils/stores";
-import ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
+import { APP_NAME } from "utils/constants";
+import type ApiSearchResponse from "@prismicio/client/types/ApiSearchResponse";
 
 // Components
 const Container = dynamic(() => import("components/container"));
 const Post = dynamic(() => import("components/post"));
 
-const Blog = observer(({ posts }: Props) => {
-  const stores = useStores();
-
+const Blog = ({ posts }: Props): JSX.Element => {
   return (
     <Container>
       <Head>
-        <title>Blog — {stores.uiStore.app_name}</title>
+        <title>{`Blog — ${APP_NAME}`}</title>
         <meta
           name="keywords"
           content="sofus,skovgaard,blog,react,csharp,dotnet,javascript,js,typescript,ts"
@@ -44,14 +41,12 @@ const Blog = observer(({ posts }: Props) => {
         </div>
       ) : (
         <div className="flex items-center justify-center">
-          <span className="text-center text-sm text-gray-400">
-            No posts to show
-          </span>
+          <span className="text-center text-sm text-gray-400">No posts to show</span>
         </div>
       )}
     </Container>
   );
-});
+};
 
 type Props = {
   posts: ApiSearchResponse;
